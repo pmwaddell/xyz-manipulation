@@ -24,15 +24,38 @@ def format_y_or_z(coord: float, d: float) -> str:
 
 
 def main():
-    # TODO: ask for filename, handle not finding it
-    with open('PNPNRhCOCl.xyz') as file_object:
+    """
+    print("Input the filename of the .xyz file you would like to translate: ")
+    filename = input()
+    """
+    filename = 'PNPNRhCOCl.xyz'
+    filename_no_xyz = filename[:-4]
+    # TODO: handle problems with filename, including presence of .xyz
+    # automatically add .xyz if omitted?
+    with open(filename) as file_object:
         contents = file_object.read()
     lines = contents.split('\n')
 
-    # TODO: ask for which line should be the zero point
-    zero_line = lines[2].split()
-    dx, dy, dz = -1 * float(zero_line[1]), float(zero_line[2]), float(
-        zero_line[3])
+    print("Input the number of the line in the file which contains the atom "
+          "you would like to translate (all other atoms will be moved relative "
+          "to this atom's new position): ")
+    focus_line_num = int(input())
+    # TODO: handle ValueErrors, let the user try again
+    print("Input the x, y and z coordinates of the point to which you would "
+          "like to translate this atom, in that order, separated by spaces "
+          "(if any are omitted, they will be substituted with 0; no input will "
+          "move the atom to the origin):")
+    new_coords = input().split()
+    # TODO: handle errors with input of new_coords
+    if len(new_coords) < 3:
+        for i in range(3 - len(new_coords)):
+            new_coords.append('0')
+
+    focus_line = lines[focus_line_num - 1].split()
+    dx, dy, dz = \
+        float(new_coords[0]) - float(focus_line[1]), \
+        float(new_coords[1]) - float(focus_line[2]), \
+        float(new_coords[2]) - float(focus_line[3])
 
     translated_contents = lines[0] + "\n" + lines[1] + "\n"
     for i in range(2, len(lines)):
@@ -46,8 +69,12 @@ def main():
                 format_x(x, dx), format_y_or_z(y, dy), format_y_or_z(z, dz)
             translated_contents += new_elem + new_x + new_y + new_z + "\n"
 
-    with open('RESULTTT.xyz', 'w') as result_file:
+    result_filename = filename_no_xyz + " translated.xyz"
+    with open(result_filename, 'w') as result_file:
         result_file.write(translated_contents)
+    print(f'Process complete, result saved as {result_filename}.')
+
+    # TODO: ask to repeat on additional files?
 
 
 if __name__ == "__main__":
