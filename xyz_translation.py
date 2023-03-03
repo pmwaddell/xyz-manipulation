@@ -1,3 +1,27 @@
+import os
+
+
+def get_filename_input() -> str:
+    print('Input the filename of the .xyz file you would like to '
+          'translate ("q" to quit): ', end='')
+    filename = input()
+    if filename == 'q' or filename == 'Q':
+        quit()
+    while not os.path.isfile(os.getcwd() + "\\" + filename):
+        print('No file with name ' + filename +
+              ' found in current working directory: ' + os.getcwd())
+        print(
+            '\nInput the filename of the .xyz file you would like to '
+            'translate ("q" to quit): ', end='')
+        filename = input()
+        if filename == 'q' or filename == 'Q':
+            quit()
+    if filename[-4:] != '.xyz':
+        print(f'Invalid filename {filename}: please input a .xyz file.\n')
+        return get_filename_input()
+    return filename
+
+
 def format_elem(elem: str) -> str:
     assert((len(elem) <= 2) and (len(elem) > 0))
     if len(elem) == 1:
@@ -24,27 +48,23 @@ def format_y_or_z(coord: float, d: float) -> str:
 
 
 def main():
-    """
-    print("Input the filename of the .xyz file you would like to translate: ")
-    filename = input()
-    """
-    filename = 'PNPNRhCOCl.xyz'
+    filename = get_filename_input()
     filename_no_xyz = filename[:-4]
-    # TODO: handle problems with filename, including presence of .xyz
-    # automatically add .xyz if omitted?
+    #filename = 'PNPNRhCOCl.xyz'
+
     with open(filename) as file_object:
         contents = file_object.read()
     lines = contents.split('\n')
 
     print("Input the number of the line in the file which contains the atom "
           "you would like to translate (all other atoms will be moved relative "
-          "to this atom's new position): ")
+          "to this atom's new position): ", end='')
     focus_line_num = int(input())
     # TODO: handle ValueErrors, let the user try again
     print("Input the x, y and z coordinates of the point to which you would "
           "like to translate this atom, in that order, separated by spaces "
           "(if any are omitted, they will be substituted with 0; no input will "
-          "move the atom to the origin):")
+          "move the atom to the origin): ", end='')
     new_coords = input().split()
     # TODO: handle errors with input of new_coords
     if len(new_coords) < 3:
