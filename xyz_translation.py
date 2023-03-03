@@ -18,6 +18,25 @@ def get_filename_input() -> str:
         return filename
 
 
+def get_focus_line_input(last_line_num: int) -> int:
+    while True:
+        try:
+            print("Input the number of the line in the file which contains the "
+                  "atom you would like to translate (all other atoms will be "
+                  "moved relative to this atom's new position): ", end='')
+            # TODO: add ability to restart with q???
+            focus_line_num = int(input())
+        except ValueError:
+            print('Please input an integer between 3 and the line of the last '
+                  'atom in the .xyz file.\n')
+            continue
+        if focus_line_num < 3 or focus_line_num > last_line_num:
+            print('Please input an integer between 3 and the line of the last '
+                  'atom in the .xyz file.\n')
+            continue
+        return focus_line_num
+
+
 def format_elem(elem: str) -> str:
     assert((len(elem) <= 2) and (len(elem) > 0))
     if len(elem) == 1:
@@ -46,17 +65,14 @@ def format_y_or_z(coord: float, d: float) -> str:
 def main():
     filename = get_filename_input()
     filename_no_xyz = filename[:-4]
-    #filename = 'PNPNRhCOCl.xyz'
-
     with open(filename) as file_object:
         contents = file_object.read()
     lines = contents.split('\n')
 
-    print("Input the number of the line in the file which contains the atom "
-          "you would like to translate (all other atoms will be moved relative "
-          "to this atom's new position): ", end='')
-    focus_line_num = int(input())
-    # TODO: handle ValueErrors, let the user try again
+    # 'focus line' means the line containing the atom that will be translated to the coordinates input by the user
+    focus_line_num = get_focus_line_input(len(lines) - 1)
+
+
     print("Input the x, y and z coordinates of the point to which you would "
           "like to translate this atom, in that order, separated by spaces "
           "(if any are omitted, they will be substituted with 0; empty input "
