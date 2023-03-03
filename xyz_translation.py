@@ -2,24 +2,20 @@ import os
 
 
 def get_filename_input() -> str:
-    print('Input the filename of the .xyz file you would like to '
-          'translate ("q" to quit): ', end='')
-    filename = input()
-    if filename == 'q' or filename == 'Q':
-        quit()
-    while not os.path.isfile(os.getcwd() + "\\" + filename):
-        print('No file with name ' + filename +
-              ' found in current working directory: ' + os.getcwd())
-        print(
-            '\nInput the filename of the .xyz file you would like to '
-            'translate ("q" to quit): ', end='')
+    while True:
+        print('Input the filename of the .xyz file you would like to '
+              'translate ("q" to quit): ', end='')
         filename = input()
         if filename == 'q' or filename == 'Q':
             quit()
-    if filename[-4:] != '.xyz':
-        print(f'Invalid filename {filename}: please input a .xyz file.\n')
-        return get_filename_input()
-    return filename
+        if not os.path.isfile(os.getcwd() + "\\" + filename):
+            print('No file with name ' + filename +
+                  ' found in current working directory: ' + os.getcwd() + '\n')
+            continue
+        if filename[-4:] != '.xyz':
+            print(f'Invalid filename {filename}: please input a .xyz file.\n')
+            continue
+        return filename
 
 
 def format_elem(elem: str) -> str:
@@ -63,8 +59,8 @@ def main():
     # TODO: handle ValueErrors, let the user try again
     print("Input the x, y and z coordinates of the point to which you would "
           "like to translate this atom, in that order, separated by spaces "
-          "(if any are omitted, they will be substituted with 0; no input will "
-          "move the atom to the origin): ", end='')
+          "(if any are omitted, they will be substituted with 0; empty input "
+          "will move the atom to the origin): ", end='')
     new_coords = input().split()
     # TODO: handle errors with input of new_coords
     if len(new_coords) < 3:
@@ -95,6 +91,7 @@ def main():
     print(f'Process complete, result saved as {result_filename}.')
 
     # TODO: ask to repeat on additional files?
+    # call main function again in that case
 
 
 if __name__ == "__main__":
