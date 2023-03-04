@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 
 def get_filename_input() -> str:
@@ -20,12 +21,17 @@ def get_filename_input() -> str:
 
 def get_focus_line_input(last_line_num: int) -> int:
     while True:
+        print("Input the number of the line in the file which contains the "
+              "atom you would like to translate (all other atoms will be "
+              "moved relative to this atom's new position) "
+              "(\"q\" to restart): ", end='')
+        raw_input = input()
+        if raw_input == 'q' or raw_input == 'Q':
+            print('\n\n')
+            main()
+            quit()
         try:
-            print("Input the number of the line in the file which contains the "
-                  "atom you would like to translate (all other atoms will be "
-                  "moved relative to this atom's new position): ", end='')
-            # TODO: add ability to restart with q???
-            focus_line_num = int(input())
+            focus_line_num = int(raw_input)
         except ValueError:
             print('Please input an integer between 3 and the line of the last '
                   'atom in the .xyz file.\n')
@@ -35,6 +41,35 @@ def get_focus_line_input(last_line_num: int) -> int:
                   'atom in the .xyz file.\n')
             continue
         return focus_line_num
+
+
+def get_new_coords_input() -> List:
+    while True:
+        print("Input the x, y and z coordinates of the point to which you "
+              "would like to translate this atom, in that order, separated by "
+              "spaces (if any are omitted, they will be substituted with 0; "
+              "empty input will move the atom to the origin) "
+              "(\"q\" to restart): ", end='')
+        raw_input = input()
+        if raw_input == 'q' or raw_input == 'Q':
+            print('\n\n')
+            main()
+            quit()
+        new_coords = raw_input.split()
+        if len(new_coords) > 3:
+            print('Please input only up to three coordinates.\n')
+            continue
+        for coord in new_coords:
+            try:
+                # This merely tests that coord can be converted properly to a float.
+                float(coord)
+            except ValueError:
+                print('Please use numbers for the new coordinates.')
+                continue
+        if len(new_coords) < 3:
+            for i in range(3 - len(new_coords)):
+                new_coords.append('0')
+        return new_coords
 
 
 def format_elem(elem: str) -> str:
@@ -72,17 +107,7 @@ def main():
     # 'focus line' means the line containing the atom that will be translated to the coordinates input by the user
     focus_line_num = get_focus_line_input(len(lines) - 1)
 
-
-    print("Input the x, y and z coordinates of the point to which you would "
-          "like to translate this atom, in that order, separated by spaces "
-          "(if any are omitted, they will be substituted with 0; empty input "
-          "will move the atom to the origin): ", end='')
-    new_coords = input().split()
-    # TODO: handle errors with input of new_coords
-    if len(new_coords) < 3:
-        for i in range(3 - len(new_coords)):
-            new_coords.append('0')
-
+    new_coords = get_new_coords_input()
     focus_line = lines[focus_line_num - 1].split()
     dx, dy, dz = \
         float(new_coords[0]) - float(focus_line[1]), \
@@ -104,10 +129,14 @@ def main():
     result_filename = filename_no_xyz + " translated.xyz"
     with open(result_filename, 'w') as result_file:
         result_file.write(translated_contents)
-    print(f'Process complete, result saved as {result_filename}.')
+    print(f'Process complete, result saved as {result_filename}.\n')
 
-    # TODO: ask to repeat on additional files?
-    # call main function again in that case
+    print('If you would like to translate additional files, '
+          'input "y": ', end='')
+    ctn = input()
+    if ctn == 'y' or ctn == 'Y':
+        print('\n')
+        main()
 
 
 if __name__ == "__main__":
