@@ -1,3 +1,23 @@
+#!/usr/bin/env python3
+"""
+A script which translates sets of coordinates in .xyz files.
+
+The user is prompted for the filename of the .xyz file they wish to translate,
+the line in that file of the atom they would like to move, and the coordinates
+of the new point to which they would like to move that atom. Then, a new .xyz
+file is prepared which contains the same structure as the original file but
+with all coordinates translated relative to the specified atom, effectively
+translating the entire structure.
+"""
+__author__ = "Peter Waddell"
+__copyright__ = "Copyright 2023"
+__credits__ = ["Peter Waddell"]
+__version__ = "0.0.1"
+__date__ = "2023/03/04"
+__maintainer__ = "Peter Waddell"
+__email__ = "pmwaddell9@gmail.com"
+__status__ = "Prototype"
+
 import os
 from typing import List
 
