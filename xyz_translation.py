@@ -118,8 +118,8 @@ def get_new_coords_input() -> List:
 
 def format_elem(elem: str) -> str:
     """
-    Formats an element symbol for a .xyz file by adding an additional space if
-    needed (for the one-letter symbols) in order to preserve the file's spacing.
+    Formats an element symbol for a .xyz file by adding an additional spaces
+    after the symbol as needed in order to preserve the file's formatting.
 
     Parameters
     ----------
@@ -133,30 +133,34 @@ def format_elem(elem: str) -> str:
     """
     assert ((len(elem) <= 2) and (len(elem) > 0))
     if len(elem) == 1:
-        return elem + " "
-    return elem
+        return elem + "   "
+    return elem + "  "
 
 
-def format_coord(coord: float, total_spaces: int) -> str:
+def format_coord(coord: float) -> str:
     """
     Formats a coordinate for a .xyz file by representing the number to six
     decimal places and adding additional spaces in front as needed.
+
+    The total length of each coordinate string should be 12.
+
+    Parameters
+    ----------
+    coord : float
+        Float of the coordinate to be formatted.
+
+    Returns
+    -------
+    str
+        Formatted coord., ready to add to a line in the translated .xyz file.
     """
     new_coord = "{:.6f}".format(coord)
-    spaces_needed = total_spaces - len(new_coord)
+    spaces_needed = 12 - len(new_coord)
     assert (spaces_needed >= 0)
     result = ""
     for i in range(spaces_needed):
         result += " "
     return result + new_coord
-
-
-def format_x(coord: float) -> str:
-    return format_coord(coord, 14)
-
-
-def format_y_or_z(coord: float) -> str:
-    return format_coord(coord, 12)
 
 
 def main():
@@ -184,9 +188,9 @@ def main():
             new_x, new_y, new_z = x + dx, y + dy, z + dz
             new_elem = format_elem(split_line[0])
             translated_contents += new_elem + \
-                                   format_x(new_x) + \
-                                   format_y_or_z(new_y) + \
-                                   format_y_or_z(new_z) + "\n"
+                                   format_coord(new_x) + \
+                                   format_coord(new_y) + \
+                                   format_coord(new_z) + "\n"
 
     result_filename = filename_no_xyz + " translated.xyz"
     with open(result_filename, 'w') as result_file:
