@@ -20,7 +20,7 @@ __status__ = "Prototype"
 
 import os
 from get_inputs import get_filename_input
-from format_xyz import format_coord, format_elem
+from format_for_xyz import format_coord, format_elem
 from typing import List
 
 
