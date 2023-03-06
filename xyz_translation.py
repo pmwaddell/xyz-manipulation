@@ -13,12 +13,11 @@ __author__ = "Peter Waddell"
 __copyright__ = "Copyright 2023"
 __credits__ = ["Peter Waddell"]
 __version__ = "0.0.1"
-__date__ = "2023/03/04"
+__date__ = "2023/03/06"
 __maintainer__ = "Peter Waddell"
 __email__ = "pmwaddell9@gmail.com"
 __status__ = "Prototype"
 
-import os
 from get_inputs import get_filename_input
 from format_for_xyz import format_coord, format_elem
 from typing import List
@@ -84,7 +83,7 @@ def get_new_coords_input() -> List:
     Returns
     -------
     List
-        List of three strings representing coordinates of the new point.
+        List of three floats representing coordinates of the new point.
     """
     while True:
         print("Input the x, y and z coordinates of the point to which you "
@@ -95,20 +94,20 @@ def get_new_coords_input() -> List:
         raw_input = input()
         if raw_input == 'q' or raw_input == 'Q':
             restart()
-        new_coords = raw_input.split()
-        if len(new_coords) > 3:
+        raw_new_coords = raw_input.split()
+        new_coords = []
+        if len(raw_new_coords) > 3:
             print('Please input only up to three coordinates.\n')
             continue
-        for coord in new_coords:
+        for coord in raw_new_coords:
             try:
-                # This merely tests that coord can be converted properly to a float.
-                float(coord)
+                new_coords.append(float(coord))
             except ValueError:
                 print('Please use numbers for the new coordinates.')
                 continue
         if len(new_coords) < 3:
             for i in range(3 - len(new_coords)):
-                new_coords.append('0')
+                new_coords.append(0)
         return new_coords
 
 
@@ -123,9 +122,9 @@ def main():
 
     focus_line = lines[focus_line_num - 1].split()
     dx, dy, dz = \
-        float(new_coords[0]) - float(focus_line[1]), \
-        float(new_coords[1]) - float(focus_line[2]), \
-        float(new_coords[2]) - float(focus_line[3])
+        new_coords[0] - float(focus_line[1]), \
+        new_coords[1] - float(focus_line[2]), \
+        new_coords[2] - float(focus_line[3])
 
     translated_contents = lines[0] + "\n" + lines[1] + "\n"
     for i in range(2, len(lines)):
