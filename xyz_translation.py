@@ -126,6 +126,7 @@ def main():
         new_coords[1] - float(focus_line[2]), \
         new_coords[2] - float(focus_line[3])
 
+    # TODO: make this into its own function?
     translated_contents = lines[0] + "\n" + lines[1] + "\n"
     for i in range(2, len(lines)):
         split_line = lines[i].split()

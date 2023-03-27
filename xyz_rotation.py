@@ -32,74 +32,41 @@ def restart():
     quit()
 
 
-# TODO: rotation wrt arbitrary axis: https://www.youtube.com/watch?v=XqNCbe2flb8
-# see also https://www.eng.uc.edu/~beaucag/Classes/Properties/OptionalProjects/CoordinateTransformationCode/Rotate%20about%20an%20arbitrary%20axis%20(3%20dimensions).html
-def get_new_coords_input() -> List:
+def normalize(v: List) -> List:
     """
-    Asks the user to input the coordinates of the point to which the atom from
-    the previously-specified 'focus line' will be translated. The user is
-    prompted until they provide a valid input or request to restart.
+    Returns a normalized version of the input vector (i.e. same direction but
+    magnitude of 1).
 
-    The input is taken as space-separated floats; if any are omitted, 0 is
-    used. Any point other than the origin is accepted.
+    Parameters
+    ----------
+    v : List
+        List of three floats: coordinates to the vector that will be normalized.
 
     Returns
     -------
     List
-        List of three floats representing coordinates of the new point.
+        List of three floats corresponding to the point after normalization.
     """
-    while True:
-        print("Input the x, y and z coordinates, in that order, of the point "
-              "which defines the axis of rotation separated by spaces (if any "
-              "are omitted, they will be substituted with 0) which will be the "
-              "line between this point and the origin. "
-              "(\"q\" to restart): ", end='')
-        raw_input = input()
-        if raw_input == 'q' or raw_input == 'Q':
-
-            restart()
-        raw_new_coords = raw_input.split()
-        new_coords = []
-        if len(raw_new_coords) > 3:
-            print('Please input only up to three coordinates.\n')
-            continue
-        for coord in raw_new_coords:
-            try:
-                new_coords.append(float(coord))
-            except ValueError:
-                print('Please use numbers for the new coordinates.')
-                continue
-        if len(new_coords) < 3:
-            for i in range(3 - len(new_coords)):
-                new_coords.append(0)
-        if new_coords == [0, 0, 0]:
-            print('Please use any point other than the origin.')
-            continue
-        return new_coords
+    return [i / get_magnitude(v) for i in v]
 
 
-def get_axis_input() -> str:
-    """
-    Asks the user to input the name of the desired axis of rotation
-    (x, y or z). The user is prompted until they provide a valid input or
-    request to restart.
+def get_magnitude(v: List) -> float:
+    return math.sqrt(sum([i ** 2 for i in v]))
 
-    Returns
-    -------
-    str
-        String of the name of the desired axis of rotation (x, y or z).
-    """
-    while True:
-        print('Input the axis you would like to rotate around '
-              '(x, y or z) (\"q\" to restart): ', end='')
-        axis = input()
-        if axis == 'q' or axis == 'Q':
-            restart()
-        good_axes = {'x', 'y', 'z', 'X', 'Y', 'Z'}
-        if axis not in good_axes:
-            print('Please input one of x, y or z for the rotation axis.\n')
-            continue
-        return axis
+
+def dot(u: List, v: List) -> float:
+    assert (len(u) == 3 and len(v) == 3)
+    result = 0
+    for i in range(3):
+        result += u[i] * v[i]
+    return result
+
+
+def get_angle_between_vectors(u: List, v: List) -> float:
+    # Yes, I think I've decided to carry around degrees rather than radians.
+    return math.degrees(
+        math.acos(dot(u, v) / (get_magnitude(u) * get_magnitude(v)))
+    )
 
 
 def get_rotation_degrees() -> float:
@@ -122,6 +89,54 @@ def get_rotation_degrees() -> float:
         except ValueError:
             print('Please use numbers for the new coordinates.')
             continue
+
+
+# TODO: rotation wrt arbitrary axis: https://www.youtube.com/watch?v=XqNCbe2flb8
+# see also https://www.eng.uc.edu/~beaucag/Classes/Properties/OptionalProjects/CoordinateTransformationCode/Rotate%20about%20an%20arbitrary%20axis%20(3%20dimensions).html
+def get_rotation_matrices(theta: float) -> List:
+    """
+    Asks the user to input a point that, along with the origin, defines the
+    desired axis of rotation. Thee name of one of the principle axes can also
+    be input (x, y or z). The user is prompted until they provide a valid input
+    or request to restart.
+
+    Returns
+    -------
+    List
+        List of rotation matrices for the desired rotation.
+    """
+    while True:
+        print('Input the coordinates of the point which, along with the '
+              'origin, defines the axis you would like to rotate around '
+              '(input "x", "y" or "z" to rotate around those axes; if any '
+              'coordinates are omitted, they will be substituted with 0) '
+              '(\"q\" to restart): ', end='')
+        raw_input = input()
+
+        if raw_input == 'q' or raw_input == 'Q':
+            restart()
+        if raw_input == 'x' or raw_input == 'X':
+            return [get_x_rotation_matrix(theta)]
+        elif raw_input == 'y' or raw_input == 'Y':
+            return [get_y_rotation_matrix(theta)]
+        elif raw_input == 'z' or raw_input == 'Z':
+            return [get_z_rotation_matrix(theta)]
+
+        raw_point = raw_input.split()
+        point = []
+        if len(raw_point) > 3:
+            print('Please input only up to three coordinates.\n')
+            continue
+        for coord in raw_point:
+            try:
+                point.append(float(coord))
+            except ValueError:
+                print('Please use numbers for the coordinates of the point.')
+                continue
+        if len(point) < 3:
+            for i in range(3 - len(point)):
+                point.append(0)
+        return get_compound_rotation_matrices(point, theta)
 
 
 def get_x_rotation_matrix(theta: float) -> List:
@@ -178,7 +193,27 @@ def get_z_rotation_matrix(theta: float) -> List:
             [0, 0, 1]]
 
 
-def rotate(point: List, rotation_matrix: List) -> List:
+def get_compound_rotation_matrices(rotation_axis: List, theta: float) -> List:
+    # TODO: there is a problem in here, fix it...
+    # try following this instead: http://web.archive.org/web/20140515121518/http://inside.mines.edu:80/~gmurray/ArbitraryAxisRotation/ArbitraryAxisRotation.html
+    # do z, y, z, y, z
+    # and this guy again https://www.youtube.com/watch?v=XqNCbe2flb8
+    # https://www.youtube.com/watch?v=n6yeak4FITs
+    unit_vector = normalize(rotation_axis)
+    alpha = get_angle_between_vectors([0, unit_vector[1], unit_vector[2]],
+                                      [0, 0, 1])
+    step_1_matrix = get_x_rotation_matrix(alpha)
+    q = rotate(unit_vector, [step_1_matrix])
+    beta = get_angle_between_vectors(q, [0, 0, 1])
+
+    return [get_x_rotation_matrix(alpha),
+            get_y_rotation_matrix(-1 * beta),
+            get_z_rotation_matrix(theta),
+            get_y_rotation_matrix(beta),
+            get_x_rotation_matrix(-1 * alpha)]
+
+
+def rotate(point: List, rotation_matrices: List) -> List:
     """
     Performs a rotation on a point via matrix multiplication, returns the new
     coordinates of the rotated point.
@@ -187,8 +222,9 @@ def rotate(point: List, rotation_matrix: List) -> List:
     ----------
     point : List
         List of three floats corresponding to the point that will be rotated.
-    rotation_matrix : List
-        3 x 3 matrix representing the transformation matrix for a rotation.
+    rotation_matrices : List
+        List of 3 x 3 matrices representing the transformation matrices for
+        a rotation.
 
     Returns
     -------
@@ -196,14 +232,20 @@ def rotate(point: List, rotation_matrix: List) -> List:
         List of three floats corresponding to the point after rotation.
     """
     assert (len(point) == 3)
-    assert (len(rotation_matrix) == 3 and len(rotation_matrix[0]) == 3
-            and len(rotation_matrix[1]) == 3 and len(rotation_matrix[2]) == 3)
-    result = []
-    for i in range(3):
-        coord = 0
-        for j in range(3):
-            coord += rotation_matrix[i][j] * point[j]
-        result.append(coord)
+    for rotation_matrix in rotation_matrices:
+        assert (len(rotation_matrix) == 3
+                and len(rotation_matrix[0]) == 3
+                and len(rotation_matrix[1]) == 3
+                and len(rotation_matrix[2]) == 3)
+    result = point.copy()
+    for rotation_matrix in rotation_matrices:
+        old_point = result.copy()
+        result = []
+        for i in range(3):
+            coord = 0
+            for j in range(3):
+                coord += rotation_matrix[i][j] * old_point[j]
+            result.append(coord)
     return result
 
 
@@ -213,17 +255,10 @@ def main():
     with open(filename) as file_object:
         contents = file_object.read()
     lines = contents.split('\n')
-    axis = get_axis_input()
     theta = get_rotation_degrees()
+    rotation_matrices = get_rotation_matrices(theta)
 
-    rotation_matrix = []
-    if axis == 'x' or axis == 'X':
-        rotation_matrix = get_x_rotation_matrix(theta)
-    elif axis == 'y' or axis == 'Y':
-        rotation_matrix = get_y_rotation_matrix(theta)
-    elif axis == 'z' or axis == 'Z':
-        rotation_matrix = get_z_rotation_matrix(theta)
-
+    # TODO: make this into its own function?
     rotated_contents = lines[0] + "\n" + lines[1] + "\n"
     for i in range(2, len(lines)):
         split_line = lines[i].split()
@@ -231,7 +266,7 @@ def main():
             assert (len(split_line) == 4)
             x, y, z = \
                 float(split_line[1]), float(split_line[2]), float(split_line[3])
-            new_x, new_y, new_z = rotate([x, y, z], rotation_matrix)
+            new_x, new_y, new_z = rotate([x, y, z], rotation_matrices)
             new_elem = format_elem(split_line[0])
             rotated_contents += new_elem + \
                                 format_coord(new_x) + \
