@@ -32,6 +32,52 @@ def restart():
     quit()
 
 
+# TODO: rotation wrt arbitrary axis: https://www.youtube.com/watch?v=XqNCbe2flb8
+# see also https://www.eng.uc.edu/~beaucag/Classes/Properties/OptionalProjects/CoordinateTransformationCode/Rotate%20about%20an%20arbitrary%20axis%20(3%20dimensions).html
+def get_new_coords_input() -> List:
+    """
+    Asks the user to input the coordinates of the point to which the atom from
+    the previously-specified 'focus line' will be translated. The user is
+    prompted until they provide a valid input or request to restart.
+
+    The input is taken as space-separated floats; if any are omitted, 0 is
+    used. Any point other than the origin is accepted.
+
+    Returns
+    -------
+    List
+        List of three floats representing coordinates of the new point.
+    """
+    while True:
+        print("Input the x, y and z coordinates, in that order, of the point "
+              "which defines the axis of rotation separated by spaces (if any "
+              "are omitted, they will be substituted with 0) which will be the "
+              "line between this point and the origin. "
+              "(\"q\" to restart): ", end='')
+        raw_input = input()
+        if raw_input == 'q' or raw_input == 'Q':
+
+            restart()
+        raw_new_coords = raw_input.split()
+        new_coords = []
+        if len(raw_new_coords) > 3:
+            print('Please input only up to three coordinates.\n')
+            continue
+        for coord in raw_new_coords:
+            try:
+                new_coords.append(float(coord))
+            except ValueError:
+                print('Please use numbers for the new coordinates.')
+                continue
+        if len(new_coords) < 3:
+            for i in range(3 - len(new_coords)):
+                new_coords.append(0)
+        if new_coords == [0, 0, 0]:
+            print('Please use any point other than the origin.')
+            continue
+        return new_coords
+
+
 def get_axis_input() -> str:
     """
     Asks the user to input the name of the desired axis of rotation
