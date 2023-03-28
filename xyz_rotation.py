@@ -136,9 +136,9 @@ def get_rotation_degrees() -> float:
 def get_rotation_matrices(theta: float) -> List:
     """
     Asks the user to input a point that, along with the origin, defines the
-    desired axis of rotation. Thee name of one of the principle axes can also
-    be input (x, y or z). The user is prompted until they provide a valid input
-    or request to restart.
+    desired axis of rotation. The name of one of the principle axes can also be
+    input (x, y or z). The user is prompted until they provide a valid input or
+    request to restart.
 
     Returns
     -------
@@ -171,8 +171,11 @@ def get_rotation_matrices(theta: float) -> List:
             try:
                 point.append(float(coord))
             except ValueError:
-                print('Please use numbers for the coordinates of the point.')
+                print('Please use numbers for the coordinates of the point.\n')
                 continue
+        if point == [0, 0, 0]:
+            print('Please select a point other than the origin.\n')
+            continue
         if len(point) < 3:
             for i in range(3 - len(point)):
                 point.append(0)
