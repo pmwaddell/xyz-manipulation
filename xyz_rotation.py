@@ -3,10 +3,10 @@
 A script which rotates sets of coordinates in .xyz files.
 
 The user is prompted for the filename of the .xyz file they wish to translate,
-the name of the axis about which they would like to rotate the structure, and
-the number of degrees they would like to rotate it by. Then, a new .xyz file is
-prepared which contains the same structure as the original file but
-with all coordinates rotated in this manner.
+the axis about which they would like to rotate the structure, and the number of
+degrees they would like to rotate it by. Then, a new .xyz file is prepared
+which contains the same structure as the original file but with all coordinates
+rotated in this manner.
 """
 __author__ = "Peter Waddell"
 __copyright__ = "Copyright 2023"
@@ -51,10 +51,38 @@ def normalize(v: List) -> List:
 
 
 def get_magnitude(v: List) -> float:
+    """
+    Returns the magnitude of the input vector.
+
+    Parameters
+    ----------
+    v : List
+        List of  floats: coordinates of the vector.
+
+    Returns
+    -------
+    float
+        Magnitude of the vector.
+    """
     return math.sqrt(sum([i ** 2 for i in v]))
 
 
 def dot(u: List, v: List) -> float:
+    """
+    Computes the dot product of two vectors.
+
+    Parameters
+    ----------
+    v : List
+        List of  floats: coordinates of the vector.
+    u : List
+        List of  floats: coordinates of the vector.
+
+    Returns
+    -------
+    float
+        Dot product of the two vectors.
+    """
     assert (len(u) == 3 and len(v) == 3)
     result = 0
     for i in range(3):
@@ -63,7 +91,21 @@ def dot(u: List, v: List) -> float:
 
 
 def get_angle_between_vectors(u: List, v: List) -> float:
-    # Yes, I think I've decided to carry around degrees rather than radians.
+    """
+    Computes the angle between two vectors.
+
+    Parameters
+    ----------
+    v : List
+        List of  floats: coordinates of the vector.
+    u : List
+        List of  floats: coordinates of the vector.
+
+    Returns
+    -------
+    float
+        Angle between the two vectors, in degrees.
+    """
     return math.degrees(
         math.acos(dot(u, v) / (get_magnitude(u) * get_magnitude(v)))
     )
@@ -91,8 +133,6 @@ def get_rotation_degrees() -> float:
             continue
 
 
-# TODO: rotation wrt arbitrary axis: https://www.youtube.com/watch?v=XqNCbe2flb8
-# see also https://www.eng.uc.edu/~beaucag/Classes/Properties/OptionalProjects/CoordinateTransformationCode/Rotate%20about%20an%20arbitrary%20axis%20(3%20dimensions).html
 def get_rotation_matrices(theta: float) -> List:
     """
     Asks the user to input a point that, along with the origin, defines the
@@ -194,11 +234,23 @@ def get_z_rotation_matrix(theta: float) -> List:
 
 
 def get_compound_rotation_matrices(rotation_axis: List, theta: float) -> List:
-    # TODO: there is a problem in here, fix it...
-    # try following this instead: http://web.archive.org/web/20140515121518/http://inside.mines.edu:80/~gmurray/ArbitraryAxisRotation/ArbitraryAxisRotation.html
-    # do z, y, z, y, z
-    # and this guy again https://www.youtube.com/watch?v=XqNCbe2flb8
-    # https://www.youtube.com/watch?v=n6yeak4FITs
+    """
+    Returns a list of rotation matrices (around x, y and z) which represent a
+    rotation around an arbitrary axis by the input degrees.
+
+    Parameters
+    ----------
+    rotation_axis : List
+        List of  floats: coordinates of the rotation axis (which is taken to be
+        between the origin and this input point).
+    theta : float
+        Number of degrees for the rotation.
+
+    Returns
+    -------
+    List
+        List of rotation matrices which accomplish the desired rotation.
+    """
     unit_vector = normalize(rotation_axis)
     alpha = get_angle_between_vectors([0, unit_vector[1], unit_vector[2]],
                                       [0, 0, 1])
