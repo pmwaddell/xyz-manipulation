@@ -1,7 +1,7 @@
 import os
 
 
-def get_filename_input(operation: str) -> str:
+def input_filename(operation: str) -> str:
     """
     Asks the user to input the name of a .xyz file in the cwd. The user is
     prompted until they provide a valid input or request to quit.

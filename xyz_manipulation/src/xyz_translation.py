@@ -18,8 +18,8 @@ __maintainer__ = "Peter Waddell"
 __email__ = "pmwaddell9@gmail.com"
 __status__ = "Prototype"
 
-from get_inputs import get_filename_input
-from format_for_xyz import format_coord, format_elem
+from xyz_manipulation.src.inputs import input_filename
+from xyz_manipulation.src.format_for_xyz import format_coord, format_elem
 from typing import List
 
 
@@ -32,7 +32,7 @@ def restart():
     quit()
 
 
-def get_focus_line_input(last_line_num: int) -> int:
+def input_focus_line(last_line_num: int) -> int:
     """
     Asks the user to input the number of the 'focus line' of the .xyz file. The
     user is prompted until they provide a valid input or request to restart.
@@ -72,7 +72,7 @@ def get_focus_line_input(last_line_num: int) -> int:
         return focus_line_num
 
 
-def get_new_coords_input() -> List:
+def input_new_coords() -> List:
     """
     Asks the user to input the coordinates of the point to which the atom from
     the previously-specified 'focus line' will be translated. The user is
@@ -111,14 +111,21 @@ def get_new_coords_input() -> List:
         return new_coords
 
 
+def translate(point: List, d_vector: List) -> List:
+    assert(len(point) == 3 and len(d_vector) == 3)
+    return [point[0] + d_vector[0],
+            point[1] + d_vector[1],
+            point[2] + d_vector[2]]
+
+
 def main():
-    filename = get_filename_input('translate')
+    filename = input_filename('translate')
     filename_no_xyz = filename[:-4]
     with open(filename) as file_object:
         contents = file_object.read()
     lines = contents.split('\n')
-    focus_line_num = get_focus_line_input(len(lines) - 1)
-    new_coords = get_new_coords_input()
+    focus_line_num = input_focus_line(len(lines) - 1)
+    new_coords = input_new_coords()
 
     focus_line = lines[focus_line_num - 1].split()
     dx, dy, dz = \
@@ -126,7 +133,7 @@ def main():
         new_coords[1] - float(focus_line[2]), \
         new_coords[2] - float(focus_line[3])
 
-    # TODO: make this into its own function?
+    # TODO: make this into its own function? for all 3
     translated_contents = lines[0] + "\n" + lines[1] + "\n"
     for i in range(2, len(lines)):
         split_line = lines[i].split()
@@ -135,7 +142,8 @@ def main():
         assert (len(split_line) == 4)
         x, y, z = \
             float(split_line[1]), float(split_line[2]), float(split_line[3])
-        new_x, new_y, new_z = x + dx, y + dy, z + dz
+        new_point = translate([x, y, z], [dx, dy, dz])
+        new_x, new_y, new_z = new_point[0], new_point[1], new_point[2]
         new_elem = format_elem(split_line[0])
         translated_contents += new_elem + \
                                format_coord(new_x) + \

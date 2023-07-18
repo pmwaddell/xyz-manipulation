@@ -18,8 +18,8 @@ __email__ = "pmwaddell9@gmail.com"
 __status__ = "Prototype"
 
 import math
-from get_inputs import get_filename_input
-from format_for_xyz import format_coord, format_elem
+from xyz_manipulation.src.inputs import input_filename
+from xyz_manipulation.src.format_for_xyz import format_coord, format_elem
 from typing import List
 
 
@@ -47,10 +47,11 @@ def normalize(v: List) -> List:
     List
         List of three floats corresponding to the point after normalization.
     """
-    return [i / get_magnitude(v) for i in v]
+    assert (calc_magnitude(v) > 0)
+    return [i / calc_magnitude(v) for i in v]
 
 
-def get_magnitude(v: List) -> float:
+def calc_magnitude(v: List) -> float:
     """
     Returns the magnitude of the input vector.
 
@@ -90,7 +91,7 @@ def dot(u: List, v: List) -> float:
     return result
 
 
-def get_angle_between_vectors(u: List, v: List) -> float:
+def calc_angle_between_vectors(u: List, v: List) -> float:
     """
     Computes the angle between two vectors.
 
@@ -106,12 +107,13 @@ def get_angle_between_vectors(u: List, v: List) -> float:
     float
         Angle between the two vectors, in degrees.
     """
+    assert ((calc_magnitude(u) > 0) and (calc_magnitude(v) > 0))
     return math.degrees(
-        math.acos(dot(u, v) / (get_magnitude(u) * get_magnitude(v)))
+        math.acos(dot(u, v) / (calc_magnitude(u) * calc_magnitude(v)))
     )
 
 
-def get_rotation_degrees() -> float:
+def input_rotation_degrees() -> float:
     """
     Asks the user to input the desired number of degrees for the rotation. The
     user is prompted until they provide a valid input or request to restart.
@@ -255,11 +257,11 @@ def get_compound_rotation_matrices(rotation_axis: List, theta: float) -> List:
         List of rotation matrices which accomplish the desired rotation.
     """
     unit_vector = normalize(rotation_axis)
-    alpha = get_angle_between_vectors([0, unit_vector[1], unit_vector[2]],
-                                      [0, 0, 1])
+    alpha = calc_angle_between_vectors([0, unit_vector[1], unit_vector[2]],
+                                       [0, 0, 1])
     step_1_matrix = get_x_rotation_matrix(alpha)
     q = rotate(unit_vector, [step_1_matrix])
-    beta = get_angle_between_vectors(q, [0, 0, 1])
+    beta = calc_angle_between_vectors(q, [0, 0, 1])
 
     return [get_x_rotation_matrix(alpha),
             get_y_rotation_matrix(-1 * beta),
@@ -305,28 +307,29 @@ def rotate(point: List, rotation_matrices: List) -> List:
 
 
 def main():
-    filename = get_filename_input('rotate')
+    filename = input_filename('rotate')
     filename_no_xyz = filename[:-4]
     with open(filename) as file_object:
         contents = file_object.read()
     lines = contents.split('\n')
-    theta = get_rotation_degrees()
+    theta = input_rotation_degrees()
     rotation_matrices = get_rotation_matrices(theta)
 
-    # TODO: make this into its own function?
+    # TODO: make this into its own function? for all 3
     rotated_contents = lines[0] + "\n" + lines[1] + "\n"
     for i in range(2, len(lines)):
         split_line = lines[i].split()
-        if split_line:
-            assert (len(split_line) == 4)
-            x, y, z = \
-                float(split_line[1]), float(split_line[2]), float(split_line[3])
-            new_x, new_y, new_z = rotate([x, y, z], rotation_matrices)
-            new_elem = format_elem(split_line[0])
-            rotated_contents += new_elem + \
-                                format_coord(new_x) + \
-                                format_coord(new_y) + \
-                                format_coord(new_z) + "\n"
+        if not split_line:
+            continue
+        assert (len(split_line) == 4)
+        x, y, z = \
+            float(split_line[1]), float(split_line[2]), float(split_line[3])
+        new_x, new_y, new_z = rotate([x, y, z], rotation_matrices)
+        new_elem = format_elem(split_line[0])
+        rotated_contents += new_elem + \
+                            format_coord(new_x) + \
+                            format_coord(new_y) + \
+                            format_coord(new_z) + "\n"
 
     result_filename = filename_no_xyz + " rotated.xyz"
     with open(result_filename, 'w') as result_file:
