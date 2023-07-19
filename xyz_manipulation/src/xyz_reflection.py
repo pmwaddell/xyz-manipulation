@@ -1,22 +1,9 @@
 from typing import List
 from xyz_manipulation.src.inputs import input_filename
-from xyz_manipulation.src.format_for_xyz import format_coord, format_elem
-from xyz_rotation import rotate, calc_angle_between_vectors, \
-    get_compound_rotation_matrices
-
-
-class Plane:
-    def __init__(self, point, normal_vector):
-        assert (len(point) == 3)
-        assert (len(normal_vector) == 3)
-        self.point = point
-        self.normal_vector = normal_vector
-
-    def get_point(self):
-        return self.point.copy()
-
-    def get_normal_vector(self):
-        return self.normal_vector.copy()
+from xyz_manipulation.src.xyz_operate import format_coord, format_elem, \
+    calc_angle_between_vectors
+from xyz_rotation import rotate, get_compound_rotation_matrices
+from plane import Plane
 
 
 def restart():

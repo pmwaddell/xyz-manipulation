@@ -12,14 +12,14 @@ __author__ = "Peter Waddell"
 __copyright__ = "Copyright 2023"
 __credits__ = ["Peter Waddell"]
 __version__ = "0.0.1"
-__date__ = "2023/03/06"
+__date__ = "2023/07/16"
 __maintainer__ = "Peter Waddell"
 __email__ = "pmwaddell9@gmail.com"
 __status__ = "Prototype"
 
 import math
 from xyz_manipulation.src.inputs import input_filename
-from xyz_manipulation.src.format_for_xyz import format_coord, format_elem
+from xyz_operate import normalize, calc_angle_between_vectors
 from typing import List
 
 
@@ -30,87 +30,6 @@ def restart():
     print('\n\n')
     main()
     quit()
-
-
-def normalize(v: List) -> List:
-    """
-    Returns a normalized version of the input vector (i.e. same direction but
-    magnitude of 1).
-
-    Parameters
-    ----------
-    v : List
-        List of three floats: coordinates to the vector that will be normalized.
-
-    Returns
-    -------
-    List
-        List of three floats corresponding to the point after normalization.
-    """
-    assert (calc_magnitude(v) > 0)
-    return [i / calc_magnitude(v) for i in v]
-
-
-def calc_magnitude(v: List) -> float:
-    """
-    Returns the magnitude of the input vector.
-
-    Parameters
-    ----------
-    v : List
-        List of  floats: coordinates of the vector.
-
-    Returns
-    -------
-    float
-        Magnitude of the vector.
-    """
-    return math.sqrt(sum([i ** 2 for i in v]))
-
-
-def dot(u: List, v: List) -> float:
-    """
-    Computes the dot product of two vectors.
-
-    Parameters
-    ----------
-    v : List
-        List of  floats: coordinates of the vector.
-    u : List
-        List of  floats: coordinates of the vector.
-
-    Returns
-    -------
-    float
-        Dot product of the two vectors.
-    """
-    assert (len(u) == 3 and len(v) == 3)
-    result = 0
-    for i in range(3):
-        result += u[i] * v[i]
-    return result
-
-
-def calc_angle_between_vectors(u: List, v: List) -> float:
-    """
-    Computes the angle between two vectors.
-
-    Parameters
-    ----------
-    v : List
-        List of  floats: coordinates of the vector.
-    u : List
-        List of  floats: coordinates of the vector.
-
-    Returns
-    -------
-    float
-        Angle between the two vectors, in degrees.
-    """
-    assert ((calc_magnitude(u) > 0) and (calc_magnitude(v) > 0))
-    return math.degrees(
-        math.acos(dot(u, v) / (calc_magnitude(u) * calc_magnitude(v)))
-    )
 
 
 def input_rotation_degrees() -> float:
@@ -184,6 +103,39 @@ def get_rotation_matrices(theta: float) -> List:
         return get_compound_rotation_matrices(point, theta)
 
 
+def get_compound_rotation_matrices(rotation_axis: List,
+                                   theta: float) -> List:
+    """
+    Returns a list of rotation matrices (around x, y and z) which represent a
+    rotation around an arbitrary axis by the input degrees.
+
+    Parameters
+    ----------
+    rotation_axis : List
+        List of  floats: coordinates of the rotation axis (which is taken to be
+        between the origin and this input point).
+    theta : float
+        Number of degrees for the rotation.
+
+    Returns
+    -------
+    List
+        List of rotation matrices which accomplish the desired rotation.
+    """
+    unit_vector = normalize(rotation_axis)
+    alpha = calc_angle_between_vectors([0, unit_vector[1], unit_vector[2]],
+                                       [0, 0, 1])
+    step_1_matrix = get_x_rotation_matrix(alpha)
+    q = rotate(unit_vector, [step_1_matrix])
+    beta = calc_angle_between_vectors(q, [0, 0, 1])
+
+    return [get_x_rotation_matrix(alpha),
+            get_y_rotation_matrix(-1 * beta),
+            get_z_rotation_matrix(theta),
+            get_y_rotation_matrix(beta),
+            get_x_rotation_matrix(-1 * alpha)]
+
+
 def get_x_rotation_matrix(theta: float) -> List:
     """
     Returns the matrix for rotation around the x axis by theta degrees.
@@ -236,38 +188,6 @@ def get_z_rotation_matrix(theta: float) -> List:
              math.cos(math.radians(theta)),
              0],
             [0, 0, 1]]
-
-
-def get_compound_rotation_matrices(rotation_axis: List, theta: float) -> List:
-    """
-    Returns a list of rotation matrices (around x, y and z) which represent a
-    rotation around an arbitrary axis by the input degrees.
-
-    Parameters
-    ----------
-    rotation_axis : List
-        List of  floats: coordinates of the rotation axis (which is taken to be
-        between the origin and this input point).
-    theta : float
-        Number of degrees for the rotation.
-
-    Returns
-    -------
-    List
-        List of rotation matrices which accomplish the desired rotation.
-    """
-    unit_vector = normalize(rotation_axis)
-    alpha = calc_angle_between_vectors([0, unit_vector[1], unit_vector[2]],
-                                       [0, 0, 1])
-    step_1_matrix = get_x_rotation_matrix(alpha)
-    q = rotate(unit_vector, [step_1_matrix])
-    beta = calc_angle_between_vectors(q, [0, 0, 1])
-
-    return [get_x_rotation_matrix(alpha),
-            get_y_rotation_matrix(-1 * beta),
-            get_z_rotation_matrix(theta),
-            get_y_rotation_matrix(beta),
-            get_x_rotation_matrix(-1 * alpha)]
 
 
 def rotate(point: List, rotation_matrices: List) -> List:

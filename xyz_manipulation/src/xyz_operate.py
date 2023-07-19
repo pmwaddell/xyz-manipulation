@@ -1,5 +1,110 @@
+import math
 from typing import List, Callable, Union
-from xyz_reflection import Plane
+from plane import Plane
+
+
+def normalize(v: List) -> List:
+    """
+    Returns a normalized version of the input vector (i.e. same direction but
+    magnitude of 1).
+
+    Parameters
+    ----------
+    v : List
+        List of three floats: coordinates to the vector that will be normalized.
+
+    Returns
+    -------
+    List
+        List of three floats corresponding to the point after normalization.
+    """
+    assert (calc_magnitude(v) > 0)
+    return [i / calc_magnitude(v) for i in v]
+
+
+def calc_magnitude(v: List) -> float:
+    """
+    Returns the magnitude of the input vector.
+
+    Parameters
+    ----------
+    v : List
+        List of  floats: coordinates of the vector.
+
+    Returns
+    -------
+    float
+        Magnitude of the vector.
+    """
+    return math.sqrt(sum([i ** 2 for i in v]))
+
+
+def dot(u: List, v: List) -> float:
+    """
+    Computes the dot product of two vectors.
+
+    Parameters
+    ----------
+    v : List
+        List of  floats: coordinates of the vector.
+    u : List
+        List of  floats: coordinates of the vector.
+
+    Returns
+    -------
+    float
+        Dot product of the two vectors.
+    """
+    assert (len(u) == 3 and len(v) == 3)
+    result = 0
+    for i in range(3):
+        result += u[i] * v[i]
+    return result
+
+
+def cross(u: List, v: List) -> List:
+    """
+    Computes the cross product of two vectors.
+
+    Parameters
+    ----------
+    v : List
+        List of  floats: coordinates of the vector.
+    u : List
+        List of  floats: coordinates of the vector.
+
+    Returns
+    -------
+    List
+        Cross product of the two vectors.
+    """
+    return [
+        [(u[2] * v[3]) - (u[3] * v[2])],
+        [(u[1] * v[3]) - (u[3] * v[1])],
+        [(u[1] * v[2]) - (u[2] * v[1])]
+    ]
+
+
+def calc_angle_between_vectors(u: List, v: List) -> float:
+    """
+    Computes the angle between two vectors.
+
+    Parameters
+    ----------
+    v : List
+        List of  floats: coordinates of the vector.
+    u : List
+        List of  floats: coordinates of the vector.
+
+    Returns
+    -------
+    float
+        Angle between the two vectors, in degrees.
+    """
+    assert ((calc_magnitude(u) > 0) and (calc_magnitude(v) > 0))
+    return math.degrees(
+        math.acos(dot(u, v) / (calc_magnitude(u) * calc_magnitude(v)))
+    )
 
 
 def format_elem(elem: str) -> str:
