@@ -1,3 +1,13 @@
+#!/usr/bin/env python3
+__author__ = "Peter Waddell"
+__copyright__ = "Copyright 2023"
+__credits__ = ["Peter Waddell"]
+__version__ = "0.0.1"
+__date__ = "2023/7/16"
+__maintainer__ = "Peter Waddell"
+__email__ = "pmwaddell9@gmail.com"
+__status__ = "Prototype"
+
 import unittest
 from xyz_operate import operate_on_lines
 from xyz_translation import translate
