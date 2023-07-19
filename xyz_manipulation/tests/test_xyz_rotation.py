@@ -14,9 +14,24 @@ class TestXYZRotation(unittest.TestCase):
             self.success_lines = file_object.read().split('\n')
 
     def do_rotation_test(self,
-                 rotation_axis: List,
-                 theta: float,
-                 success_filename: str):
+                         rotation_axis: List,
+                         theta: float,
+                         success_filename: str):
+        """
+        Tests the operate_on_lines function with rotate on the file
+        test.xyz, by comparing with the contents of the corresponding file.
+
+        Parameters
+        ----------
+        rotation_axis : List
+            List of  floats: coordinates of the rotation axis (which is taken
+            to be between the origin and this input point).
+        theta : float
+            Number of degrees for the rotation.
+        success_filename : str
+            Filename of the .xyz file after the successful rotation for
+            each test, used for comparison.
+        """
         rotation_attempt_lines = operate_on_lines(
             self.test_lines, rotate,
             get_compound_rotation_matrices(rotation_axis, theta)).split('\n')
@@ -27,21 +42,75 @@ class TestXYZRotation(unittest.TestCase):
                              self.success_lines[i])
 
     def test_rot_1_2_3_30d(self):
+        """
+        Tests rotation around the axis <1, 2, 3> by 30 degrees.
+        """
         self.do_rotation_test([1, 2, 3], 30, 'test_rot_1_2_3_30d.xyz')
 
     def test_rot_1_2_3_neg30d(self):
+        """
+        Tests rotation around the axis <1, 2, 3> by -30 degrees.
+        """
         self.do_rotation_test([1, 2, 3], -30, 'test_rot_1_2_3_neg30d.xyz')
 
     def test_rot_neg1_2_3_30d(self):
+        """
+        Tests rotation around the axis <-1, 2, 3> by 30 degrees.
+        """
         self.do_rotation_test([-1, 2, 3], 30, 'test_rot_neg1_2_3_30d.xyz')
 
     def test_rot_1_neg2_3_30d(self):
+        """
+        Tests rotation around the axis <1, -2, 3> by 30 degrees.
+        """
         self.do_rotation_test([1, -2, 3], 30, 'test_rot_1_neg2_3_30d.xyz')
 
     def test_rot_1_2_neg3_30d(self):
+        """
+        Tests rotation around the axis <1, 2, -3> by 30 degrees.
+        """
         self.do_rotation_test([1, 2, -3], 30, 'test_rot_1_2_neg3_30d.xyz')
 
-    # x, y, z axes w letters and manual
-    # arbitrary rotation axes: all positive, all negative, one negative, two negative
-    # large angles, very large angles
-    # negative angles
+    def test_rot_neg1_neg2_3_30d(self):
+        """
+        Tests rotation around the axis <-1, -2, 3> by 30 degrees.
+        """
+        self.do_rotation_test([-1, -2, 3], 30, 'test_rot_neg1_neg2_3_30d.xyz')
+
+    def test_rot_neg1_neg2_neg3_30d(self):
+        """
+        Tests rotation around the axis <-1, -2, -3> by 30 degrees.
+        """
+        self.do_rotation_test([-1, -2, -3], 30,
+                              'test_rot_neg1_neg2_neg3_30d.xyz')
+
+    def test_rot_1_0_0_63d(self):
+        """
+        Tests rotation around the axis <1, 0, 0> by 63 degrees.
+        """
+        self.do_rotation_test([1, 0, 0], 63, 'test_rot_1_0_0_63d.xyz')
+
+    def test_rot_0_1_0_63d(self):
+        """
+        Tests rotation around the axis <0, 1, 0> by 63 degrees.
+        """
+        self.do_rotation_test([0, 1, 0], 63, 'test_rot_0_1_0_63d.xyz')
+
+    def test_rot_0_0_1_63d(self):
+        """
+        Tests rotation around the axis <0, 0, 1> by 63 degrees.
+        """
+        self.do_rotation_test([0, 0, 1], 63, 'test_rot_0_0_1_63d.xyz')
+
+    def test_rot_6_3_neg11_360d(self):
+        """
+        Tests rotation around the axis <6, 3, -11> by 360 degrees.
+        """
+        self.do_rotation_test([6, 3, -11], 360, 'test_rot_6_3_neg11_360d.xyz')
+
+    def test_rot_6_3_neg11_234250d(self):
+        """
+        Tests rotation around the axis <6, 3, -11> by 234250 degrees.
+        """
+        self.do_rotation_test([6, 3, -11], 234250,
+                              'test_rot_6_3_neg11_234250d.xyz')

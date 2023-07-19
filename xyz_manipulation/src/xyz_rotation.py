@@ -20,7 +20,7 @@ __status__ = "Prototype"
 import math
 from typing import List
 from xyz_manipulation.src.inputs import input_filename
-from xyz_operate import normalize, calc_angle_between_vectors, format_elem, format_coord
+from xyz_operate import operate_on_lines, normalize, calc_angle_between_vectors
 
 
 def restart():
@@ -240,30 +240,14 @@ def rotate(point: List, rotation_matrices: List) -> List:
 
 def main():
     filename = input_filename('rotate')
-    filename_no_xyz = filename[:-4]
     with open(filename) as file_object:
         contents = file_object.read()
     lines = contents.split('\n')
     theta = input_rotation_degrees()
-    rotation_matrices = get_rotation_matrices(theta)
+    rotated_contents = operate_on_lines(lines, rotate,
+                                        get_rotation_matrices(theta))
 
-    # TODO: make this into its own function? for all 3
-    rotated_contents = lines[0] + "\n" + lines[1] + "\n"
-    for i in range(2, len(lines)):
-        split_line = lines[i].split()
-        if not split_line:
-            continue
-        assert (len(split_line) == 4)
-        x, y, z = \
-            float(split_line[1]), float(split_line[2]), float(split_line[3])
-        new_x, new_y, new_z = rotate([x, y, z], rotation_matrices)
-        new_elem = format_elem(split_line[0])
-        rotated_contents += new_elem + \
-                            format_coord(new_x) + \
-                            format_coord(new_y) + \
-                            format_coord(new_z) + "\n"
-
-    result_filename = filename_no_xyz + " rotated.xyz"
+    result_filename = filename[:-4] + " rotated.xyz"
     with open(result_filename, 'w') as result_file:
         result_file.write(rotated_contents)
     print(f'Process complete, result saved as {result_filename}.\n')
