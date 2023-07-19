@@ -101,7 +101,8 @@ def calc_angle_between_vectors(u: List, v: List) -> float:
     float
         Angle between the two vectors, in degrees.
     """
-    assert ((calc_magnitude(u) > 0) and (calc_magnitude(v) > 0))
+    if calc_magnitude(u) == 0 or calc_magnitude(v) == 0:
+        return 0
     return math.degrees(
         math.acos(dot(u, v) / (calc_magnitude(u) * calc_magnitude(v)))
     )

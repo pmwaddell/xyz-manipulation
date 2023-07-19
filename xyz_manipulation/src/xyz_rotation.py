@@ -19,7 +19,7 @@ __status__ = "Prototype"
 
 import math
 from xyz_manipulation.src.inputs import input_filename
-from xyz_operate import normalize, calc_angle_between_vectors
+from xyz_operate import normalize, calc_angle_between_vectors, format_elem, format_coord
 from typing import List
 
 
@@ -122,6 +122,9 @@ def get_compound_rotation_matrices(rotation_axis: List,
     List
         List of rotation matrices which accomplish the desired rotation.
     """
+    # The given axis is rotated into the xz plane first, then rotated such that
+    # it aligns with (0, 0, 1). Then the desired rotation is performed, and
+    # finally the steps are carried out in reverse.
     unit_vector = normalize(rotation_axis)
     alpha = calc_angle_between_vectors([0, unit_vector[1], unit_vector[2]],
                                        [0, 0, 1])
@@ -129,6 +132,11 @@ def get_compound_rotation_matrices(rotation_axis: List,
     q = rotate(unit_vector, [step_1_matrix])
     beta = calc_angle_between_vectors(q, [0, 0, 1])
 
+    # Note that the direction of rotation should be different depending on
+    # which side of the z axis the given axis is after being put into the xz
+    # plane (or, more simply, whether the given x component is > or < 0).
+    if unit_vector[0] < 0:
+        beta *= -1
     return [get_x_rotation_matrix(alpha),
             get_y_rotation_matrix(-1 * beta),
             get_z_rotation_matrix(theta),
