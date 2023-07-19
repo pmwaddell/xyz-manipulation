@@ -65,5 +65,5 @@ def operate_on_lines(lines: List,
         result_contents += new_elem + \
                            format_coord(new_point[0]) + \
                            format_coord(new_point[1]) + \
-                           format_coord(new_point[2])
-        return result_contents
+                           format_coord(new_point[2]) + "\n"
+    return result_contents
