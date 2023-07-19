@@ -51,7 +51,7 @@ def format_coord(coord: float) -> str:
 
 def operate_on_lines(lines: List,
                      operate: Callable,
-                     operation_arg: Union[List, Plane]) -> List:
+                     operation_arg: Union[List, Plane]) -> str:
     result_contents = lines[0] + "\n" + lines[1] + "\n"
     for i in range(2, len(lines)):
         split_line = lines[i].split()

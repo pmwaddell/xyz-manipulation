@@ -1,7 +1,6 @@
 from typing import List
 from xyz_manipulation.src.inputs import input_filename
 from xyz_manipulation.src.format_for_xyz import format_coord, format_elem
-from xyz_translation import translate
 from xyz_rotation import rotate, calc_angle_between_vectors, \
     get_compound_rotation_matrices
 
@@ -103,6 +102,7 @@ def xy_reflect(point: List) -> List:
 
 # TODO: make this a general transformation function instead in a shared file?
 def reflect(point: List, plane: Plane) -> List:
+    from xyz_translation import translate
     plane_point = plane.get_point()
     plane_vector = plane.get_normal_vector()
     # translate Plane's point to origin, move target point as well

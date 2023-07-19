@@ -19,7 +19,7 @@ __email__ = "pmwaddell9@gmail.com"
 __status__ = "Prototype"
 
 from xyz_manipulation.src.inputs import input_filename
-from xyz_manipulation.src.format_for_xyz import format_coord, format_elem
+from xyz_operate import operate_on_lines
 from typing import List
 
 
@@ -112,7 +112,22 @@ def input_new_coords() -> List:
 
 
 def translate(point: List, d_vector: List) -> List:
-    assert(len(point) == 3 and len(d_vector) == 3)
+    """
+    Translates a point according to an input vector w/ the change in each coord.
+
+    Parameters
+    ----------
+    point : List
+        Coordinates of the point to be translated.
+    d_vector : List
+        Vector containing the desired change in each coordinate for translation.
+
+    Returns
+    -------
+    List
+        Coordinates of the translated point.
+    """
+    assert (len(point) == 3 and len(d_vector) == 3)
     return [point[0] + d_vector[0],
             point[1] + d_vector[1],
             point[2] + d_vector[2]]
@@ -120,37 +135,17 @@ def translate(point: List, d_vector: List) -> List:
 
 def main():
     filename = input_filename('translate')
-    filename_no_xyz = filename[:-4]
     with open(filename) as file_object:
-        contents = file_object.read()
-    lines = contents.split('\n')
+        lines = file_object.read().split('\n')
     focus_line_num = input_focus_line(len(lines) - 1)
     new_coords = input_new_coords()
-
     focus_line = lines[focus_line_num - 1].split()
-    dx, dy, dz = \
-        new_coords[0] - float(focus_line[1]), \
-        new_coords[1] - float(focus_line[2]), \
-        new_coords[2] - float(focus_line[3])
+    d_vector = [new_coords[0] - float(focus_line[1]),
+                new_coords[1] - float(focus_line[2]),
+                new_coords[2] - float(focus_line[3])]
+    translated_contents = operate_on_lines(lines, translate, d_vector)
 
-    # TODO: make this into its own function? for all 3
-    translated_contents = lines[0] + "\n" + lines[1] + "\n"
-    for i in range(2, len(lines)):
-        split_line = lines[i].split()
-        if not split_line:
-            continue
-        assert (len(split_line) == 4)
-        x, y, z = \
-            float(split_line[1]), float(split_line[2]), float(split_line[3])
-        new_point = translate([x, y, z], [dx, dy, dz])
-        new_x, new_y, new_z = new_point[0], new_point[1], new_point[2]
-        new_elem = format_elem(split_line[0])
-        translated_contents += new_elem + \
-                               format_coord(new_x) + \
-                               format_coord(new_y) + \
-                               format_coord(new_z) + "\n"
-
-    result_filename = filename_no_xyz + " translated.xyz"
+    result_filename = filename[:-4] + " translated.xyz"
     with open(result_filename, 'w') as result_file:
         result_file.write(translated_contents)
     print(f'Process complete, result saved as {result_filename}.\n')
