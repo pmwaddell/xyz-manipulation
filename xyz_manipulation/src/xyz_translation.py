@@ -18,7 +18,7 @@ __maintainer__ = "Peter Waddell"
 __email__ = "pmwaddell9@gmail.com"
 __status__ = "Prototype"
 
-from xyz_manipulation.src.inputs import input_filename
+from inputs import input_filename
 from xyz_operate import transform_lines
 from typing import List
 

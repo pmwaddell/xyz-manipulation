@@ -20,8 +20,6 @@ class TestXYZRotation(unittest.TestCase):
     def setUp(self):
         with open('test.xyz') as file_object:
             self.test_lines = file_object.read().split('\n')
-        with open('test_rot_1_2_3_30d.xyz') as file_object:
-            self.success_lines = file_object.read().split('\n')
 
     def do_rotation_test(self,
                          rotation_axis: List,

@@ -19,7 +19,7 @@ __status__ = "Prototype"
 
 import math
 from typing import List
-from xyz_manipulation.src.inputs import input_filename
+from inputs import input_filename
 from xyz_operate import transform_lines, normalize, calc_angle_between_vectors
 
 
@@ -241,8 +241,7 @@ def rotate(point: List, rotation_matrices: List) -> List:
 def main():
     filename = input_filename('rotate')
     with open(filename) as file_object:
-        contents = file_object.read()
-    lines = contents.split('\n')
+        lines = file_object.read().split('\n')
     theta = input_rotation_degrees()
     # TODO: consider abstracting each type of transformation as a class that associates the matrices with the angle, for example?
     rotated_contents = transform_lines(lines, rotate,

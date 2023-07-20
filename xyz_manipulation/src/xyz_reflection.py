@@ -1,7 +1,7 @@
 from typing import List
-from xyz_manipulation.src.inputs import input_filename
-from xyz_manipulation.src.xyz_operate import format_coord, format_elem, \
-    cross, calc_magnitude, calc_angle_between_vectors
+from inputs import input_filename
+from xyz_operate import cross, calc_magnitude, calc_angle_between_vectors, \
+    transform_lines
 from xyz_rotation import rotate, get_compound_rotation_matrices
 from plane import Plane
 
@@ -91,7 +91,7 @@ def reflect(point: List, plane: Plane) -> List:
     cross_pdt = cross(plane_vector, [0, 0, 1])
 
     # In the case where the plane's normal vector is (0, 0, 1), don't rotate.
-    # TODO: abstract this conditional rotation?
+    # TODO: abstract this conditional rotation? or build this condition into the rotation function? or something?
     if calc_magnitude(cross_pdt) != 0:
         rot_matrices = get_compound_rotation_matrices(cross_pdt, theta)
         rotated_point = rotate(translated_point, rot_matrices)
@@ -111,29 +111,13 @@ def reflect(point: List, plane: Plane) -> List:
 
 def main():
     filename = input_filename('reflect')
-    filename_no_xyz = filename[:-4]
     with open(filename) as file_object:
-        contents = file_object.read()
-    lines = contents.split('\n')
+        lines = file_object.read().split('\n')
     reflection_plane = input_reflection_plane()
+    # TODO: consider abstracting each type of transformation as a class that associates the matrices with the angle, for example?
+    reflected_contents = transform_lines(lines, reflect, reflection_plane)
 
-    # TODO: make this into its own function? for all 3
-    reflected_contents = lines[0] + "\n" + lines[1] + "\n"
-    for i in range(2, len(lines)):
-        split_line = lines[i].split()
-        if not split_line:
-            continue
-        assert (len(split_line) == 4)
-        x, y, z = \
-            float(split_line[1]), float(split_line[2]), float(split_line[3])
-        new_x, new_y, new_z = reflect([x, y, z], reflection_plane)
-        new_elem = format_elem(split_line[0])
-        reflected_contents += new_elem + \
-                              format_coord(new_x) + \
-                              format_coord(new_y) + \
-                              format_coord(new_z) + "\n"
-
-    result_filename = filename_no_xyz + " reflected.xyz"
+    result_filename = filename[:-4] + " reflected.xyz"
     with open(result_filename, 'w') as result_file:
         result_file.write(reflected_contents)
     print(f'Process complete, result saved as {result_filename}.\n')
