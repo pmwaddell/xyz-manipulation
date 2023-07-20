@@ -48,3 +48,19 @@ class TestXYZReflection(unittest.TestCase):
         """
         test_plane = Plane(point=[0, 0, 0], normal_vector=[0, 0, 1])
         self.do_reflection_test(test_plane, 'test_refl_origin_0_0_1.xyz')
+
+    def test_refl_origin_0_1_0(self):
+        """
+        Tests reflection through the plane defined by the origin and normal
+        vector <0, 1, 0>.
+        """
+        test_plane = Plane(point=[0, 0, 0], normal_vector=[0, 1, 0])
+        self.do_reflection_test(test_plane, 'test_refl_origin_0_1_0.xyz')
+
+    def test_refl_origin_1_0_0(self):
+        """
+        Tests reflection through the plane defined by the origin and normal
+        vector <1, 0, 0>.
+        """
+        test_plane = Plane(point=[0, 0, 0], normal_vector=[1, 0, 0])
+        self.do_reflection_test(test_plane, 'test_refl_origin_1_0_0.xyz')
