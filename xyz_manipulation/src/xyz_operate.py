@@ -79,9 +79,9 @@ def cross(u: List, v: List) -> List:
         Cross product of the two vectors.
     """
     return [
-        [(u[2] * v[3]) - (u[3] * v[2])],
-        [(u[1] * v[3]) - (u[3] * v[1])],
-        [(u[1] * v[2]) - (u[2] * v[1])]
+        (u[1] * v[2]) - (u[2] * v[1]),
+        (u[0] * v[2]) - (u[2] * v[0]),
+        (u[0] * v[1]) - (u[1] * v[0])
     ]
 
 
@@ -155,9 +155,27 @@ def format_coord(coord: float) -> str:
     return result + new_coord
 
 
-def operate_on_lines(lines: List,
-                     operate: Callable,
-                     operation_arg: Union[List, Plane]) -> str:
+def transform_lines(lines: List,
+                     transform: Callable,
+                     transformation_arg: Union[List, Plane]) -> str:
+    """
+    Performs a given transformation on a series of points from lines of a .xyz
+    file, formats the result in .xyz file format and returns the new lines.
+
+    Parameters
+    ----------
+    lines : List
+        List of lines from a .xyz file to be transformed.
+    transform : Callable
+        Function corresponding to the desired transformation.
+    transformation_arg : Union[List, Plane]
+        Additional argument for the transformation, e.g. angle of rotation.
+
+    Returns
+    -------
+    List
+        List of transformed lines in .xyz file format.
+    """
     result_contents = lines[0] + "\n" + lines[1] + "\n"
     for i in range(2, len(lines)):
         split_line = lines[i].split()
@@ -166,7 +184,7 @@ def operate_on_lines(lines: List,
         assert (len(split_line) == 4)
         x, y, z = \
             float(split_line[1]), float(split_line[2]), float(split_line[3])
-        new_point = operate([x, y, z], operation_arg)
+        new_point = transform([x, y, z], transformation_arg)
         new_elem = format_elem(split_line[0])
         result_contents += new_elem + \
                            format_coord(new_point[0]) + \

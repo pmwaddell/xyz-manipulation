@@ -9,7 +9,7 @@ __email__ = "pmwaddell9@gmail.com"
 __status__ = "Prototype"
 
 import unittest
-from xyz_operate import operate_on_lines
+from xyz_operate import transform_lines
 from xyz_translation import translate
 
 
@@ -28,8 +28,8 @@ class TestXYZTranslation(unittest.TestCase):
         Tests the operate_on_lines function with translate on the file
         test.xyz, by comparing with the contents of test_translated_success.xyz.
         """
-        translation_attempt_lines = operate_on_lines(
-            self.test_lines, translate, self.dv).split('\n')
+        translation_attempt_lines = transform_lines(self.test_lines, translate,
+                                                    self.dv).split('\n')
         for i in range(len(translation_attempt_lines)):
             self.assertEqual(translation_attempt_lines[i],
                              self.success_lines[i])

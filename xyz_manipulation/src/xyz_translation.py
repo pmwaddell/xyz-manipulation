@@ -19,7 +19,7 @@ __email__ = "pmwaddell9@gmail.com"
 __status__ = "Prototype"
 
 from xyz_manipulation.src.inputs import input_filename
-from xyz_operate import operate_on_lines
+from xyz_operate import transform_lines
 from typing import List
 
 
@@ -143,7 +143,7 @@ def main():
     d_vector = [new_coords[0] - float(focus_line[1]),
                 new_coords[1] - float(focus_line[2]),
                 new_coords[2] - float(focus_line[3])]
-    translated_contents = operate_on_lines(lines, translate, d_vector)
+    translated_contents = transform_lines(lines, translate, d_vector)
 
     result_filename = filename[:-4] + " translated.xyz"
     with open(result_filename, 'w') as result_file:

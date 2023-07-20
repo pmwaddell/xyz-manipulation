@@ -20,7 +20,7 @@ __status__ = "Prototype"
 import math
 from typing import List
 from xyz_manipulation.src.inputs import input_filename
-from xyz_operate import operate_on_lines, normalize, calc_angle_between_vectors
+from xyz_operate import transform_lines, normalize, calc_angle_between_vectors
 
 
 def restart():
@@ -244,8 +244,9 @@ def main():
         contents = file_object.read()
     lines = contents.split('\n')
     theta = input_rotation_degrees()
-    rotated_contents = operate_on_lines(lines, rotate,
-                                        get_rotation_matrices(theta))
+    # TODO: consider abstracting each type of transformation as a class that associates the matrices with the angle, for example?
+    rotated_contents = transform_lines(lines, rotate,
+                                       get_rotation_matrices(theta))
 
     result_filename = filename[:-4] + " rotated.xyz"
     with open(result_filename, 'w') as result_file:

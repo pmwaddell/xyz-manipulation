@@ -1,7 +1,7 @@
 from typing import List
 from xyz_manipulation.src.inputs import input_filename
 from xyz_manipulation.src.xyz_operate import format_coord, format_elem, \
-    calc_angle_between_vectors
+    cross, calc_magnitude, calc_angle_between_vectors
 from xyz_rotation import rotate, get_compound_rotation_matrices
 from plane import Plane
 
@@ -17,11 +17,10 @@ def restart():
 
 def input_reflection_plane() -> Plane:
     while True:
-        print('Define the Plane of reflection with a point and (relative) '
-              'normal vector which define the desired rotation Plane. '
-              'First, input the coordinates of the point (if any coordinates '
-              'are omitted, they will be substituted with 0)'
-              '(\"q\" to restart): ', end='')
+        print('Define the plane of reflection with a point and (relative) '
+              'normal vector. First, input the coordinates of the point '
+              '(if any coordinates are omitted, they will be substituted '
+              'with 0) (\"q\" to restart): ', end='')
         raw_input = input()
 
         if raw_input == 'q' or raw_input == 'Q':
@@ -75,14 +74,6 @@ def input_reflection_plane() -> Plane:
         return Plane(point, normal_vector)
 
 
-def cross(u: List, v: List) -> List:
-    return [
-        [(u[2] * v[3]) - (u[3] * v[2])],
-        [(u[1] * v[3]) - (u[3] * v[1])],
-        [(u[1] * v[2]) - (u[2] * v[1])]
-    ]
-
-
 def xy_reflect(point: List) -> List:
     return [point[0], point[1], -1 * point[2]]
 
@@ -93,18 +84,28 @@ def reflect(point: List, plane: Plane) -> List:
     plane_point = plane.get_point()
     plane_vector = plane.get_normal_vector()
     # translate Plane's point to origin, move target point as well
-    d_vector = [-1 * plane_point[0] - 1 * plane_point[1], -1 * plane_point[2]]
+    d_vector = [-1 * plane_point[0], -1 * plane_point[1], -1 * plane_point[2]]
     translated_point = translate(point, d_vector)
     # rotate normal vector to align with xy Plane
     theta = calc_angle_between_vectors(plane.get_normal_vector(), [0, 0, 1])
     cross_pdt = cross(plane_vector, [0, 0, 1])
-    rot_matrices = get_compound_rotation_matrices(cross_pdt, theta)
-    rotated_point = rotate(translated_point, rot_matrices)
+
+    # In the case where the plane's normal vector is (0, 0, 1), don't rotate.
+    # TODO: abstract this conditional rotation?
+    if calc_magnitude(cross_pdt) != 0:
+        rot_matrices = get_compound_rotation_matrices(cross_pdt, theta)
+        rotated_point = rotate(translated_point, rot_matrices)
+    else:
+        rotated_point = translated_point
     # reflect thru xy Plane
     reflected_point = xy_reflect(rotated_point)
+
     # undo first 2 steps
-    unrot_matrices = get_compound_rotation_matrices(cross_pdt, -1 * theta)
-    unrotated_point = rotate(translated_point, unrot_matrices)
+    if calc_magnitude(cross_pdt) != 0:
+        unrot_matrices = get_compound_rotation_matrices(cross_pdt, -1 * theta)
+        unrotated_point = rotate(reflected_point, unrot_matrices)
+    else:
+        unrotated_point = reflected_point
     return translate(unrotated_point, plane_point)
 
 
@@ -132,12 +133,12 @@ def main():
                               format_coord(new_y) + \
                               format_coord(new_z) + "\n"
 
-    result_filename = filename_no_xyz + " rotated.xyz"
+    result_filename = filename_no_xyz + " reflected.xyz"
     with open(result_filename, 'w') as result_file:
         result_file.write(reflected_contents)
     print(f'Process complete, result saved as {result_filename}.\n')
 
-    print('If you would like to rotate additional files, input "y": ', end='')
+    print('If you would like to reflect additional files, input "y": ', end='')
     ctn = input()
     if ctn == 'y' or ctn == 'Y':
         print('\n')

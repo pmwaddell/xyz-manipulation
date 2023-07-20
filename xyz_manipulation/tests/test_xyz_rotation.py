@@ -10,7 +10,7 @@ __status__ = "Prototype"
 
 import unittest
 from typing import List
-from xyz_operate import operate_on_lines
+from xyz_operate import transform_lines
 from xyz_rotation import rotate, get_compound_rotation_matrices
 
 
@@ -42,9 +42,10 @@ class TestXYZRotation(unittest.TestCase):
             Filename of the .xyz file after the successful rotation for
             each test, used for comparison.
         """
-        rotation_attempt_lines = operate_on_lines(
-            self.test_lines, rotate,
-            get_compound_rotation_matrices(rotation_axis, theta)).split('\n')
+        rotation_attempt_lines = transform_lines(self.test_lines, rotate,
+                                                 get_compound_rotation_matrices(
+                                                     rotation_axis,
+                                                     theta)).split('\n')
         with open(success_filename) as file_object:
             self.success_lines = file_object.read().split('\n')
         for i in range(len(rotation_attempt_lines)):
