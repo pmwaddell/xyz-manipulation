@@ -18,7 +18,7 @@ __maintainer__ = "Peter Waddell"
 __email__ = "pmwaddell9@gmail.com"
 __status__ = "Prototype"
 
-from inputs import input_filename
+from inputs import input_filename, input_point
 from xyz_operate import transform_lines
 from typing import List
 
@@ -72,45 +72,6 @@ def input_focus_line(last_line_num: int) -> int:
         return focus_line_num
 
 
-def input_new_coords() -> List:
-    """
-    Asks the user to input the coordinates of the point to which the atom from
-    the previously-specified 'focus line' will be translated. The user is
-    prompted until they provide a valid input or request to restart.
-
-    The input is taken as space-separated floats; if any are omitted, 0 is used.
-
-    Returns
-    -------
-    List
-        List of three floats representing coordinates of the new point.
-    """
-    while True:
-        print("Input the x, y and z coordinates of the point to which you "
-              "would like to translate this atom, in that order, separated by "
-              "spaces (if any are omitted, they will be substituted with 0; "
-              "empty input will move the atom to the origin) "
-              "(\"q\" to restart): ", end='')
-        raw_input = input()
-        if raw_input == 'q' or raw_input == 'Q':
-            restart()
-        raw_new_coords = raw_input.split()
-        new_coords = []
-        if len(raw_new_coords) > 3:
-            print('Please input only up to three coordinates.\n')
-            continue
-        for coord in raw_new_coords:
-            try:
-                new_coords.append(float(coord))
-            except ValueError:
-                print('Please use numbers for the new coordinates.')
-                continue
-        if len(new_coords) < 3:
-            for i in range(3 - len(new_coords)):
-                new_coords.append(0)
-        return new_coords
-
-
 def translate(point: List, d_vector: List) -> List:
     """
     Translates a point according to an input vector w/ the change in each coord.
@@ -138,7 +99,12 @@ def main():
     with open(filename) as file_object:
         lines = file_object.read().split('\n')
     focus_line_num = input_focus_line(len(lines) - 1)
-    new_coords = input_new_coords()
+    print("Input the x, y and z coordinates of the point to which you "
+          "would like to translate this atom, in that order, separated by "
+          "spaces (if any are omitted, they will be substituted with 0; "
+          "empty input will move the atom to the origin) "
+          "(\"q\" to restart): ", end='')
+    new_coords = input_point(restart)
     focus_line = lines[focus_line_num - 1].split()
     d_vector = [new_coords[0] - float(focus_line[1]),
                 new_coords[1] - float(focus_line[2]),

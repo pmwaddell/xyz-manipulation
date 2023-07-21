@@ -20,7 +20,8 @@ __status__ = "Prototype"
 import math
 from typing import List
 from inputs import input_filename
-from xyz_operate import transform_lines, normalize, calc_angle_between_vectors
+from xyz_operate import transform_lines, normalize, calc_magnitude, \
+    calc_angle_between_vectors
 
 
 def restart():
@@ -86,7 +87,7 @@ def get_rotation_matrices(theta: float) -> List:
         raw_point = raw_input.split()
         point = []
         if len(raw_point) > 3:
-            print('Please input only up to three coordinates.\n')
+            print('Please input only up to three coordinates for the point.\n')
             continue
         for coord in raw_point:
             try:
@@ -94,12 +95,12 @@ def get_rotation_matrices(theta: float) -> List:
             except ValueError:
                 print('Please use numbers for the coordinates of the point.\n')
                 continue
-        if point == [0, 0, 0]:
-            print('Please select a point other than the origin.\n')
-            continue
         if len(point) < 3:
             for i in range(3 - len(point)):
                 point.append(0)
+        if point == [0, 0, 0]:
+            print('Please select a point other than the origin.\n')
+            continue
         return get_compound_rotation_matrices(point, theta)
 
 
@@ -125,6 +126,7 @@ def get_compound_rotation_matrices(rotation_axis: List,
     # The given axis is rotated into the xz plane first, then rotated such that
     # it aligns with (0, 0, 1). Then the desired rotation is performed, and
     # finally the steps are carried out in reverse.
+    assert(calc_magnitude(rotation_axis) != 0)
     unit_vector = normalize(rotation_axis)
     alpha = calc_angle_between_vectors([0, unit_vector[1], unit_vector[2]],
                                        [0, 0, 1])
