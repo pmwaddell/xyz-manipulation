@@ -65,15 +65,20 @@ def input_coordinates(identity: str, restart: Callable) -> List:
         coords = []
         if len(raw_vector) > 3:
             print(f'Please input only up to three coordinates for '
-                  f'the {identity}.\n')
+                  f'the {identity}: ', end='')
             continue
+
+        hit_value_error = False
         for comp in raw_vector:
             try:
                 coords.append(float(comp))
             except ValueError:
                 print(f'Please use numbers for the coordinates of the '
-                      f'{identity}.\n')
-                continue
+                      f'{identity}: ', end='')
+                hit_value_error = True
+                break
+        if hit_value_error:
+            continue
         if len(coords) < 3:
             for i in range(3 - len(coords)):
                 coords.append(0)

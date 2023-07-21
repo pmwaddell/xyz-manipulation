@@ -84,6 +84,7 @@ def get_rotation_matrices(theta: float) -> List:
         elif raw_input == 'z' or raw_input == 'Z':
             return [get_z_rotation_matrix(theta)]
 
+        # Note: this input needs to be bespoke, leave as is.
         raw_point = raw_input.split()
         point = []
         if len(raw_point) > 3:
