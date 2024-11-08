@@ -1,250 +1,356 @@
-"""
-Shared Sphinx configuration using sphinx-multiproject.
-
-To build each project, the ``PROJECT`` environment variable is used.
-
-.. code:: console
-
-   $ make html  # build default project
-   $ PROJECT=dev make html  # build the dev project
-
-for more information read https://sphinx-multiproject.readthedocs.io/.
-"""
+# Sphinx documentation build configuration file
+from __future__ import annotations
 
 import os
-import sys
+import re
+from typing import TYPE_CHECKING
 
-from multiproject.utils import get_project
+from sphinx import __display_version__
 
-sys.path.append(os.path.abspath("_ext"))
+os.environ['SPHINX_AUTODOC_RELOAD_MODULES'] = '1'
+
 extensions = [
-    "hoverxref.extension",
-    "multiproject",
-    "myst_parser",
-    # For testing, conditionally disable the custom 404 pages on dev docs
-    # "notfound.extension",
-    "sphinx_copybutton",
-    "sphinx_design",
-    "sphinx_tabs.tabs",
-    "sphinx-prompt",
-    "sphinx.ext.autodoc",
-    "sphinx.ext.autosectionlabel",
-    "sphinx.ext.extlinks",
-    "sphinx.ext.intersphinx",
-    "sphinxcontrib.httpdomain",
-    "sphinxcontrib.video",
-    "sphinxemoji.sphinxemoji",
-    "sphinxext.opengraph",
+    'sphinx.ext.autodoc',
+    'sphinx.ext.doctest',
+    'sphinx.ext.todo',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.extlinks',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.viewcode',
+    'sphinx.ext.inheritance_diagram',
+    'sphinx.ext.coverage',
+    'sphinx.ext.graphviz',
 ]
+coverage_statistics_to_report = coverage_statistics_to_stdout = True
+templates_path = ['_templates']
+exclude_patterns = ['_build']
 
-multiproject_projects = {
-    "user": {
-        "use_config_file": False,
-        "config": {
-            "project": "Read the Docs user documentation",
-            "html_title": "Read the Docs user documentation",
-        },
-    },
-    "dev": {
-        "use_config_file": False,
-        "config": {
-            "project": "Read the Docs developer documentation",
-            "html_title": "Read the Docs developer documentation",
-        },
-    },
-}
+project = 'Sphinx'
+copyright = '2007-%Y, the Sphinx developers'
+release = version = __display_version__
+show_authors = True
+nitpicky = True
+show_warning_types = True
 
-docset = get_project(multiproject_projects)
-
-# Disable custom 404 on dev docs
-if docset == "user":
-    extensions.append("notfound.extension")
-
-ogp_site_name = "Read the Docs Documentation"
-ogp_use_first_image = True  # https://github.com/readthedocs/blog/pull/118
-ogp_image = "https://docs.readthedocs.io/en/latest/_static/img/logo-opengraph.png"
-# Inspired by https://github.com/executablebooks/MyST-Parser/pull/404/
-ogp_custom_meta_tags = [
-    '<meta name="twitter:card" content="summary_large_image" />',
+html_theme = 'sphinx13'
+html_theme_path = ['_themes']
+html_css_files = [
+    # 'basic.css',  # included through inheritance from the basic theme
+    'sphinx13.css',
 ]
-ogp_enable_meta_description = True
-ogp_description_length = 300
+modindex_common_prefix = ['sphinx.']
+html_static_path = ['_static']
+html_title = 'Sphinx documentation'
+html_additional_pages = {'contents': 'contents.html'}
+html_use_opensearch = 'https://www.sphinx-doc.org/en/master'
+html_baseurl = 'https://www.sphinx-doc.org/en/master/'
+html_favicon = '_static/favicon.svg'
 
-templates_path = ["_templates"]
+htmlhelp_basename = 'Sphinxdoc'
 
-# This may be elevated as a general issue for documentation and behavioral
-# change to the Sphinx build:
-# This will ensure that we use the correctly set environment for canonical URLs
-# Old Read the Docs injections makes it point only to the default version,
-# for instance /en/stable/
-html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "/")
-
-master_doc = "index"
-copyright = "Read the Docs, Inc & contributors"
-version = "11.12.0"
-release = version
-exclude_patterns = ["_build", "shared", "_includes"]
-default_role = "obj"
-intersphinx_cache_limit = 14  # cache for 2 weeks
-intersphinx_timeout = 3  # 3 seconds timeout
-intersphinx_mapping = {
-    "python": ("https://docs.python.org/3.10/", None),
-    "django": (
-        "https://docs.djangoproject.com/en/stable/",
-        "https://docs.djangoproject.com/en/stable/_objects/",
-    ),
-    "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
-    "pip": ("https://pip.pypa.io/en/stable/", None),
-    "nbsphinx": ("https://nbsphinx.readthedocs.io/en/latest/", None),
-    "myst-nb": ("https://myst-nb.readthedocs.io/en/stable/", None),
-    "ipywidgets": ("https://ipywidgets.readthedocs.io/en/stable/", None),
-    "jupytext": ("https://jupytext.readthedocs.io/en/stable/", None),
-    "ipyleaflet": ("https://ipyleaflet.readthedocs.io/en/latest/", None),
-    "poliastro": ("https://docs.poliastro.space/en/stable/", None),
-    "myst-parser": ("https://myst-parser.readthedocs.io/en/stable/", None),
-    "writethedocs": ("https://www.writethedocs.org/", None),
-    "jupyterbook": ("https://jupyterbook.org/en/stable/", None),
-    "executablebook": ("https://executablebooks.org/en/latest/", None),
-    "rst-to-myst": ("https://rst-to-myst.readthedocs.io/en/stable/", None),
-    "rtd": ("https://docs.readthedocs.io/en/stable/", None),
-    "rtd-dev": ("https://dev.readthedocs.io/en/latest/", None),
-    "rtd-blog": ("https://blog.readthedocs.com/", None),
-    "jupyter": ("https://docs.jupyter.org/en/latest/", None),
-}
-
-# Intersphinx: Do not try to resolve unresolved labels that aren't explicitly prefixed.
-# The default setting for intersphinx_disabled_reftypes can cause some pretty bad
-# breakage because we have rtd and rtd-dev stable versions in our mappings.
-# Hence, if we refactor labels, we won't see broken references, since the
-# currently active stable mapping keeps resolving.
-# Recommending doing this on all projects with Intersphinx.
-# https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#confval-intersphinx_disabled_reftypes
-intersphinx_disabled_reftypes = ["*"]
-
-myst_enable_extensions = [
-    "deflist",
+epub_theme = 'epub'
+epub_basename = 'sphinx'
+epub_author = 'the Sphinx developers'
+epub_publisher = 'https://www.sphinx-doc.org/'
+epub_uid = 'web-site'
+epub_scheme = 'url'
+epub_identifier = epub_publisher
+epub_pre_files = [('index.xhtml', 'Welcome')]
+epub_post_files = [
+    ('usage/installation.xhtml', 'Installing Sphinx'),
+    ('develop.xhtml', 'Sphinx development'),
 ]
-hoverxref_intersphinx = [
-    "sphinx",
-    "pip",
-    "nbsphinx",
-    "myst-nb",
-    "ipywidgets",
-    "jupytext",
+epub_exclude_files = [
+    '_static/opensearch.xml',
+    '_static/doctools.js',
+    '_static/searchtools.js',
+    '_static/sphinx_highlight.js',
+    '_static/basic.css',
+    '_static/language_data.js',
+    'search.html',
+    '_static/websupport.js',
 ]
-htmlhelp_basename = "ReadTheDocsdoc"
+epub_fix_images = False
+epub_max_image_width = 0
+epub_show_urls = 'inline'
+epub_use_index = False
+epub_description = 'Sphinx documentation generator system manual'
+
 latex_documents = [
     (
-        "index",
-        "ReadTheDocs.tex",
-        "Read the Docs Documentation",
-        "Eric Holscher, Charlie Leifer, Bobby Grace",
-        "manual",
-    ),
-]
-man_pages = [
-    (
-        "index",
-        "read-the-docs",
-        "Read the Docs Documentation",
-        ["Eric Holscher, Charlie Leifer, Bobby Grace"],
+        'index',
+        'sphinx.tex',
+        'Sphinx Documentation',
+        'the Sphinx developers',
+        'manual',
         1,
     )
 ]
-
-language = "en"
-
-locale_dirs = [
-    f"{docset}/locale/",
-]
-gettext_compact = False
-
-html_theme = "sphinx_rtd_theme"
-html_static_path = ["_static", f"{docset}/_static"]
-html_css_files = ["css/custom.css", "css/sphinx_prompt_css.css"]
-html_js_files = ["js/expand_tabs.js"]
-
-html_logo = "img/logo.svg"
-html_theme_options = {
-    "logo_only": True,
-}
-html_context = {
-    # Fix the "edit on" links.
-    # TODO: remove once we support different rtd config
-    # files per project.
-    "conf_py_path": f"/docs/{docset}/",
-    "display_github": True,
-    "github_user": "readthedocs",
-    "github_repo": "readthedocs.org",
-    "github_version": "main",
-    # Use to generate the Plausible "data-domain" attribute from the template
-    "plausible_domain": f"{os.environ.get('READTHEDOCS_PROJECT')}.readthedocs.io",
-}
-
-hoverxref_auto_ref = True
-hoverxref_domains = ["py"]
-hoverxref_roles = [
-    "option",
-    # Documentation pages
-    # Not supported yet: https://github.com/readthedocs/sphinx-hoverxref/issues/18
-    "doc",
-    # Glossary terms
-    "term",
-]
-hoverxref_role_types = {
-    "mod": "modal",  # for Python Sphinx Domain
-    "doc": "modal",  # for whole docs
-    "class": "tooltip",  # for Python Sphinx Domain
-    "ref": "tooltip",  # for hoverxref_auto_ref config
-    "confval": "tooltip",  # for custom object
-    "term": "tooltip",  # for glossaries
-}
-
-# See dev/style_guide.rst for documentation
-rst_epilog = """
-.. |org_brand| replace:: Read the Docs Community
-.. |com_brand| replace:: Read the Docs for Business
-.. |git_providers_and| replace:: GitHub, Bitbucket, and GitLab
-.. |git_providers_or| replace:: GitHub, Bitbucket, or GitLab
-"""
-
-# Activate autosectionlabel plugin
-autosectionlabel_prefix_document = True
-
-# sphinx-notfound-page
-# https://github.com/readthedocs/sphinx-notfound-page
-notfound_context = {
-    "title": "Page Not Found",
-    "body": """
-<h1>Page Not Found</h1>
-
-<p>Sorry, we couldn't find that page.</p>
-
-<p>Try using the search box or go to the homepage.</p>
+latex_logo = '_static/sphinx.png'
+latex_elements = {
+    'fontenc': r'\usepackage[LGR,X2,T1]{fontenc}',
+    'passoptionstopackages': r"""
+\PassOptionsToPackage{svgnames}{xcolor}
+""",
+    'preamble': r"""
+\DeclareUnicodeCharacter{229E}{\ensuremath{\boxplus}}
+\setcounter{tocdepth}{3}%    depth of what main TOC shows (3=subsubsection)
+\setcounter{secnumdepth}{1}% depth of section numbering
+\setlength{\tymin}{2cm}%     avoid too cramped table columns
+""",
+    # fix missing index entry due to RTD doing only once pdflatex after makeindex
+    'printindex': r"""
+\IfFileExists{\jobname.ind}
+             {\footnotesize\raggedright\printindex}
+             {\begin{sphinxtheindex}\end{sphinxtheindex}}
 """,
 }
-linkcheck_retries = 2
-linkcheck_timeout = 1
-linkcheck_workers = 10
+latex_show_urls = 'footnote'
+latex_use_xindy = True
+
+linkcheck_timeout = 5
 linkcheck_ignore = [
-    r"http://127\.0\.0\.1",
-    r"http://localhost",
-    r"http://community\.dev\.readthedocs\.io",
-    r"https://yourproject\.readthedocs\.io",
-    r"https?://docs\.example\.com",
-    r"https://foo\.readthedocs\.io/projects",
-    r"https://github\.com.+?#L\d+",
-    r"https://github\.com/readthedocs/readthedocs\.org/issues",
-    r"https://github\.com/readthedocs/readthedocs\.org/pull",
-    r"https://docs\.readthedocs\.io/\?rtd_search",
-    r"https://readthedocs\.org/search",
-    # This page is under login
-    r"https://readthedocs\.org/accounts/gold",
+    r'^contents\.html$',  # extra generated page
+    r'^\.\./contents\.html$',
+    re.escape('https://gitlab.com/projects/new'),  # requires sign-in
+    re.escape('https://web.libera.chat/?channel=#sphinx-doc'),
+]
+linkcheck_anchors_ignore_for_url = [
+    # anchors in Markdown files cannot be accessed directly
+    'https://github.com/Khan/style-guides/blob/master/style/python.md',
 ]
 
+autodoc_member_order = 'groupwise'
+autosummary_generate = False
+todo_include_todos = 'READTHEDOCS' not in os.environ
 extlinks = {
-    "rtd-issue": ("https://github.com/readthedocs/readthedocs.org/issues/%s", "#%s"),
+    'dupage': ('https://docutils.sourceforge.io/docs/ref/rst/%s.html', '%s'),
+    'duref': (
+        'https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#%s',
+        '%s',
+    ),
+    'durole': ('https://docutils.sourceforge.io/docs/ref/rst/roles.html#%s', '%s'),
+    'dudir': ('https://docutils.sourceforge.io/docs/ref/rst/directives.html#%s', '%s'),
 }
 
-# Disable epub mimetype warnings
-suppress_warnings = ["epub.unknown_project_files"]
+man_pages = [
+    (
+        'index',
+        'sphinx-all',
+        'Sphinx documentation generator system manual',
+        'the Sphinx developers',
+        1,
+    ),
+    ('man/sphinx-build', 'sphinx-build', 'Sphinx documentation generator tool', '', 1),
+    (
+        'man/sphinx-quickstart',
+        'sphinx-quickstart',
+        'Sphinx documentation template generator',
+        '',
+        1,
+    ),
+    ('man/sphinx-apidoc', 'sphinx-apidoc', 'Sphinx API doc generator tool', '', 1),
+    ('man/sphinx-autogen', 'sphinx-autogen', 'Generate autodoc stub pages', '', 1),
+]
+
+texinfo_documents = [
+    (
+        'index',
+        'sphinx',
+        'Sphinx Documentation',
+        'the Sphinx developers',
+        'Sphinx',
+        'The Sphinx documentation builder.',
+        'Documentation tools',
+        True,
+    ),
+]
+
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3/', None),
+    'requests': ('https://requests.readthedocs.io/en/latest/', None),
+    'readthedocs': ('https://docs.readthedocs.io/en/stable', None),
+}
+
+# Sphinx document translation with sphinx gettext feature uses these settings:
+gettext_compact = False
+
+nitpick_ignore = {
+    (
+        'cpp:class',
+        'template<typename TOuter> template<typename TInner> Wrapper::Outer<TOuter>::Inner',
+    ),  # NoQA: E501
+    ('cpp:identifier', 'MyContainer'),
+    ('js:func', 'SomeError'),
+    ('js:func', 'number'),
+    ('js:func', 'string'),
+    ('py:attr', 'srcline'),
+    ('py:class', '_AutodocProcessDocstringListener'),
+    ('py:class', '_ConfigRebuild'),  # sphinx.application.Sphinx.add_config_value
+    ('py:class', '_StrPath'),  # sphinx.environment.BuildEnvironment.doc2path
+    ('py:class', 'Element'),  # sphinx.domains.Domain
+    ('py:class', 'Documenter'),  # sphinx.application.Sphinx.add_autodocumenter
+    ('py:class', 'IndexEntry'),  # sphinx.domains.IndexEntry
+    ('py:class', 'Lexer'),  # sphinx.application.Sphinx.add_lexer
+    ('py:class', 'Node'),  # sphinx.domains.Domain
+    ('py:class', 'NullTranslations'),  # gettext.NullTranslations
+    ('py:class', 'Path'),  # sphinx.application.Sphinx.connect
+    ('py:class', 'RoleFunction'),  # sphinx.domains.Domain
+    ('py:class', 'RSTState'),  # sphinx.utils.parsing.nested_parse_to_nodes
+    ('py:class', 'Theme'),  # sphinx.application.TemplateBridge
+    ('py:class', 'SearchLanguage'),  # sphinx.application.Sphinx.add_search_language
+    ('py:class', 'StringList'),  # sphinx.utils.parsing.nested_parse_to_nodes
+    ('py:class', 'system_message'),  # sphinx.utils.docutils.SphinxDirective
+    ('py:class', 'TitleGetter'),  # sphinx.domains.Domain
+    ('py:class', 'todo_node'),  # sphinx.application.Sphinx.connect
+    ('py:class', 'Transform'),  # sphinx.application.Sphinx.add_transform
+    ('py:class', 'XRefRole'),  # sphinx.domains.Domain
+    ('py:class', 'docutils.nodes.Element'),
+    ('py:class', 'docutils.nodes.Node'),
+    ('py:class', 'docutils.nodes.NodeVisitor'),
+    ('py:class', 'docutils.nodes.TextElement'),
+    ('py:class', 'docutils.nodes.document'),
+    ('py:class', 'docutils.nodes.system_message'),
+    ('py:class', 'docutils.parsers.Parser'),
+    ('py:class', 'docutils.parsers.rst.states.Inliner'),
+    ('py:class', 'docutils.transforms.Transform'),
+    ('py:class', 'nodes.NodeVisitor'),
+    ('py:class', 'nodes.TextElement'),  # sphinx.application.Sphinx.connect
+    ('py:class', 'nodes.document'),
+    ('py:class', 'nodes.reference'),
+    ('py:class', 'pygments.lexer.Lexer'),
+    ('py:class', 'sphinx.directives.ObjDescT'),
+    ('py:class', 'sphinx.domains.IndexEntry'),
+    ('py:class', 'sphinx.ext.autodoc.Documenter'),
+    ('py:class', 'sphinx.errors.NoUri'),
+    ('py:class', 'sphinx.roles.XRefRole'),
+    ('py:class', 'sphinx.search.SearchLanguage'),
+    ('py:class', 'sphinx.theming.Theme'),
+    ('py:class', 'sphinx.util._pathlib._StrPath'),  # sphinx.project.Project.doc2path
+    ('py:class', 'sphinxcontrib.websupport.errors.DocumentNotFoundError'),
+    ('py:class', 'sphinxcontrib.websupport.errors.UserNotAuthorizedError'),
+    ('py:exc', 'docutils.nodes.SkipNode'),
+    ('py:exc', 'sphinx.environment.NoUri'),
+    ('py:func', 'setup'),
+    ('py:func', 'sphinx.util.nodes.nested_parse_with_titles'),
+    # Error in sphinxcontrib.websupport.core::WebSupport.add_comment
+    ('py:meth', 'get_comments'),
+    ('py:mod', 'autodoc'),
+    ('py:mod', 'docutils.nodes'),
+    ('py:mod', 'docutils.parsers.rst.directives'),
+    ('py:mod', 'sphinx.ext'),
+    ('py:obj', 'sphinx.util.relative_uri'),
+    ('rst:role', 'c:any'),
+    ('std:confval', 'autodoc_inherit_docstring'),
+    ('std:confval', 'automodule_skip_lines'),
+    ('std:confval', 'autossummary_imported_members'),
+    ('std:confval', 'gettext_language_team'),
+    ('std:confval', 'gettext_last_translator'),
+    ('std:confval', 'globaltoc_collapse'),
+    ('std:confval', 'globaltoc_includehidden'),
+    ('std:confval', 'globaltoc_maxdepth'),
+}
+
+
+# -- Extension interface -------------------------------------------------------
+
+from sphinx import addnodes  # NoQA: E402
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from docutils.nodes import Element
+
+    from sphinx.application import Sphinx
+    from sphinx.environment import BuildEnvironment
+
+_event_sig_re = re.compile(r'([a-zA-Z-]+)\s*\((.*)\)')
+
+
+def parse_event(_env: BuildEnvironment, sig: str, signode: Element) -> str:
+    m = _event_sig_re.match(sig)
+    if m is None:
+        signode += addnodes.desc_name(sig, sig)
+        return sig
+    name, args = m.groups()
+    signode += addnodes.desc_name(name, name)
+    plist = addnodes.desc_parameterlist()
+    for arg in args.split(','):
+        arg = arg.strip()
+        plist += addnodes.desc_parameter(arg, arg)
+    signode += plist
+    return name
+
+
+def linkify_issues_in_changelog(
+    _app: Sphinx, _path: Path, docname: str, source: list[str]
+) -> None:
+    """Linkify issue references like #123 in changelog to GitHub."""
+    if docname == 'changes':
+
+        def linkify(match: re.Match[str]) -> str:
+            url = 'https://github.com/sphinx-doc/sphinx/issues/' + match[1]
+            return f'`{match[0]} <{url}>`_'
+
+        linkified_changelog = re.sub(r'(?:PR)?#([0-9]+)\b', linkify, source[0])
+
+        source[0] = linkified_changelog
+
+
+REDIRECT_TEMPLATE = """
+<html>
+    <head>
+        <noscript>
+            <meta http-equiv="refresh" content="0; url={{rel_url}}"/>
+        </noscript>
+    </head>
+    <body>
+        <script>
+            window.location.href = '{{rel_url}}' + (window.location.search || '') + (window.location.hash || '');
+        </script>
+        <p>You should have been redirected.</p>
+        <a href="{{rel_url}}">If not, click here to continue.</a>
+    </body>
+</html>
+"""  # noqa: E501
+
+
+def build_redirects(app: Sphinx, exception: Exception | None) -> None:
+    # this is a very simple implementation of
+    # https://github.com/wpilibsuite/sphinxext-rediraffe/blob/main/sphinxext/rediraffe.py
+    # to re-direct some old pages to new ones
+    if exception is not None or app.builder.name != 'html':
+        return
+    for page, rel_redirect in (
+        (('changes.html',), 'changes/index.html'),
+        (('development', 'overview.html'), 'index.html'),
+        (('development', 'builders.html'), 'howtos/builders.html'),
+        (('development', 'theming.html'), 'html_themes/index.html'),
+        (('development', 'templating.html'), 'html_themes/templating.html'),
+        (('development', 'tutorials', 'helloworld.html'), 'extending_syntax.html'),
+        (('development', 'tutorials', 'todo.html'), 'extending_build.html'),
+        (('development', 'tutorials', 'recipe.html'), 'adding_domain.html'),
+    ):
+        path = app.outdir.joinpath(*page)
+        if path.exists():
+            continue
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open('w', encoding='utf-8') as f:
+            f.write(REDIRECT_TEMPLATE.replace('{{rel_url}}', rel_redirect))
+
+
+def setup(app: Sphinx) -> None:
+    from sphinx.util.docfields import GroupedField
+
+    app.connect('include-read', linkify_issues_in_changelog)
+    app.connect('build-finished', build_redirects)
+    fdesc = GroupedField(
+        'parameter', label='Parameters', names=('param',), can_collapse=True
+    )
+    app.add_object_type(
+        'event',
+        'event',
+        'pair: %s; event',
+        parse_event,
+        doc_field_types=[fdesc],
+    )
