@@ -8,6 +8,8 @@
   </a>
 </p>
 
+![logo](logo.PNG)
+
 > Scripts for translating, reflecting and rotating sets of coordinates in .xyz files.
 
 ### 🏠 [Homepage](https://github.com/pmwaddell/xyz-manipulation)
