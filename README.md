@@ -14,6 +14,12 @@
 
 ### 🏠 [Homepage](https://github.com/pmwaddell/xyz-manipulation)
 
+## Operation
+
+Clone the repository from [the github page](https://github.com/pmwaddell/xyz-manipulation). Navigate to the src folder 
+within and use python to run xyz_reflection, xyz_rotation or xyz_translation depending on which operation you desired.
+Then follow the instructions given the script.
+
 ## Author
 
 👤 **Peter Waddell**
