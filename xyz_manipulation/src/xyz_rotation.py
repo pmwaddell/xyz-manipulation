@@ -19,8 +19,9 @@ __status__ = "Prototype"
 
 import math
 from typing import List
-from inputs import input_filename
-from xyz_operate import transform_lines, normalize, calc_magnitude, \
+
+from xyz_manipulation.src.inputs import input_filename
+from xyz_manipulation.src.xyz_operate import transform_lines, normalize, calc_magnitude, \
     calc_angle_between_vectors
 
 

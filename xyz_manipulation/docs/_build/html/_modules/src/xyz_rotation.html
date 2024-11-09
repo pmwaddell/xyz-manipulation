@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>src.xyz_rotation &#8212; xyz-manipulation 0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for src.xyz_rotation</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">A script which rotates sets of coordinates in .xyz files.</span>
+
+<span class="sd">The user is prompted for the filename of the .xyz file they wish to translate,</span>
+<span class="sd">the axis about which they would like to rotate the structure, and the number of</span>
+<span class="sd">degrees they would like to rotate it by. Then, a new .xyz file is prepared</span>
+<span class="sd">which contains the same structure as the original file but with all coordinates</span>
+<span class="sd">rotated in this manner.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Peter Waddell&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright 2023&quot;</span>
+<span class="n">__credits__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Peter Waddell&quot;</span><span class="p">]</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.0.1&quot;</span>
+<span class="n">__date__</span> <span class="o">=</span> <span class="s2">&quot;2023/07/16&quot;</span>
+<span class="n">__maintainer__</span> <span class="o">=</span> <span class="s2">&quot;Peter Waddell&quot;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s2">&quot;pmwaddell9@gmail.com&quot;</span>
+<span class="n">__status__</span> <span class="o">=</span> <span class="s2">&quot;Prototype&quot;</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">xyz_manipulation.src.inputs</span> <span class="kn">import</span> <span class="n">input_filename</span>
+<span class="kn">from</span> <span class="nn">xyz_manipulation.src.xyz_operate</span> <span class="kn">import</span> <span class="n">transform_lines</span><span class="p">,</span> <span class="n">normalize</span><span class="p">,</span> <span class="n">calc_magnitude</span><span class="p">,</span> \
+    <span class="n">calc_angle_between_vectors</span>
+
+
+<div class="viewcode-block" id="restart">
+<a class="viewcode-back" href="../../src.html#src.xyz_rotation.restart">[docs]</a>
+<span class="k">def</span> <span class="nf">restart</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Restarts the program after adding some space in the shell.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">main</span><span class="p">()</span>
+    <span class="n">quit</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="input_rotation_degrees">
+<a class="viewcode-back" href="../../src.html#src.xyz_rotation.input_rotation_degrees">[docs]</a>
+<span class="k">def</span> <span class="nf">input_rotation_degrees</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Asks the user to input the desired number of degrees for the rotation. The</span>
+<span class="sd">    user is prompted until they provide a valid input or request to restart.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Float corresponding to degrees of the desired rotation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Input how many degrees you would like to rotate: &#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">theta</span> <span class="o">==</span> <span class="s1">&#39;q&#39;</span> <span class="ow">or</span> <span class="n">theta</span> <span class="o">==</span> <span class="s1">&#39;Q&#39;</span><span class="p">:</span>
+            <span class="n">restart</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Please use numbers for the new coordinates.&#39;</span><span class="p">)</span>
+            <span class="k">continue</span></div>
+
+
+
+<div class="viewcode-block" id="get_rotation_matrices">
+<a class="viewcode-back" href="../../src.html#src.xyz_rotation.get_rotation_matrices">[docs]</a>
+<span class="k">def</span> <span class="nf">get_rotation_matrices</span><span class="p">(</span><span class="n">theta</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Asks the user to input a point that, along with the origin, defines the</span>
+<span class="sd">    desired axis of rotation. The name of one of the principle axes can also be</span>
+<span class="sd">    input (x, y or z). The user is prompted until they provide a valid input or</span>
+<span class="sd">    request to restart.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    List</span>
+<span class="sd">        List of rotation matrices for the desired rotation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Input the coordinates of the point which, along with the &#39;</span>
+              <span class="s1">&#39;origin, defines the axis you would like to rotate around &#39;</span>
+              <span class="s1">&#39;(input &quot;x&quot;, &quot;y&quot; or &quot;z&quot; to rotate around those axes; if any &#39;</span>
+              <span class="s1">&#39;coordinates are omitted, they will be substituted with 0) &#39;</span>
+              <span class="s1">&#39;(</span><span class="se">\&quot;</span><span class="s1">q</span><span class="se">\&quot;</span><span class="s1"> to restart): &#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">raw_input</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">raw_input</span> <span class="o">==</span> <span class="s1">&#39;q&#39;</span> <span class="ow">or</span> <span class="n">raw_input</span> <span class="o">==</span> <span class="s1">&#39;Q&#39;</span><span class="p">:</span>
+            <span class="n">restart</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">raw_input</span> <span class="o">==</span> <span class="s1">&#39;x&#39;</span> <span class="ow">or</span> <span class="n">raw_input</span> <span class="o">==</span> <span class="s1">&#39;X&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">get_x_rotation_matrix</span><span class="p">(</span><span class="n">theta</span><span class="p">)]</span>
+        <span class="k">elif</span> <span class="n">raw_input</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span> <span class="ow">or</span> <span class="n">raw_input</span> <span class="o">==</span> <span class="s1">&#39;Y&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">get_y_rotation_matrix</span><span class="p">(</span><span class="n">theta</span><span class="p">)]</span>
+        <span class="k">elif</span> <span class="n">raw_input</span> <span class="o">==</span> <span class="s1">&#39;z&#39;</span> <span class="ow">or</span> <span class="n">raw_input</span> <span class="o">==</span> <span class="s1">&#39;Z&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">get_z_rotation_matrix</span><span class="p">(</span><span class="n">theta</span><span class="p">)]</span>
+
+        <span class="c1"># Note: this input needs to be bespoke, leave as is.</span>
+        <span class="n">raw_point</span> <span class="o">=</span> <span class="n">raw_input</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">point</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">raw_point</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Please input only up to three coordinates for the point.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">for</span> <span class="n">coord</span> <span class="ow">in</span> <span class="n">raw_point</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">point</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">coord</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Please use numbers for the coordinates of the point.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">continue</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">point</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">point</span><span class="p">)):</span>
+                <span class="n">point</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">point</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Please select a point other than the origin.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">return</span> <span class="n">get_compound_rotation_matrices</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_compound_rotation_matrices">
+<a class="viewcode-back" href="../../src.html#src.xyz_rotation.get_compound_rotation_matrices">[docs]</a>
+<span class="k">def</span> <span class="nf">get_compound_rotation_matrices</span><span class="p">(</span><span class="n">rotation_axis</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span>
+                                   <span class="n">theta</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a list of rotation matrices (around x, y and z) which represent a</span>
+<span class="sd">    rotation around an arbitrary axis by the input degrees.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    rotation_axis : List</span>
+<span class="sd">        List of  floats: coordinates of the rotation axis (which is taken to be</span>
+<span class="sd">        between the origin and this input point).</span>
+<span class="sd">    theta : float</span>
+<span class="sd">        Number of degrees for the rotation.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    List</span>
+<span class="sd">        List of rotation matrices which accomplish the desired rotation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># The given axis is rotated into the xz plane first, then rotated such that</span>
+    <span class="c1"># it aligns with (0, 0, 1). Then the desired rotation is performed, and</span>
+    <span class="c1"># finally the steps are carried out in reverse.</span>
+    <span class="k">assert</span><span class="p">(</span><span class="n">calc_magnitude</span><span class="p">(</span><span class="n">rotation_axis</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">unit_vector</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">rotation_axis</span><span class="p">)</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">calc_angle_between_vectors</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">unit_vector</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">unit_vector</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span>
+                                       <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="c1"># Note that the direction of first rotation should be different depending</span>
+    <span class="c1"># on which side of the z axis the y coord. of the rotation axis is.</span>
+    <span class="k">if</span> <span class="n">unit_vector</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">alpha</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">step_1_matrix</span> <span class="o">=</span> <span class="n">get_x_rotation_matrix</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">rotate</span><span class="p">(</span><span class="n">unit_vector</span><span class="p">,</span> <span class="p">[</span><span class="n">step_1_matrix</span><span class="p">])</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="n">calc_angle_between_vectors</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1"># Note that the second direction of rotation should be different depending</span>
+    <span class="c1"># on which side of the z axis the given axis is after being put into the xz</span>
+    <span class="c1"># plane (or, more simply, whether the given x component is &gt; or &lt; 0).</span>
+    <span class="k">if</span> <span class="n">unit_vector</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">beta</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">get_x_rotation_matrix</span><span class="p">(</span><span class="n">alpha</span><span class="p">),</span>
+            <span class="n">get_y_rotation_matrix</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">beta</span><span class="p">),</span>
+            <span class="n">get_z_rotation_matrix</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span>
+            <span class="n">get_y_rotation_matrix</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span>
+            <span class="n">get_x_rotation_matrix</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">alpha</span><span class="p">)]</span></div>
+
+
+
+<div class="viewcode-block" id="get_x_rotation_matrix">
+<a class="viewcode-back" href="../../src.html#src.xyz_rotation.get_x_rotation_matrix">[docs]</a>
+<span class="k">def</span> <span class="nf">get_x_rotation_matrix</span><span class="p">(</span><span class="n">theta</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the matrix for rotation around the x axis by theta degrees.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    List</span>
+<span class="sd">        3 x 3 matrix for rotation around the x axis by theta degrees.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span>
+             <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">theta</span><span class="p">)),</span>
+             <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">theta</span><span class="p">))],</span>
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span>
+             <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">theta</span><span class="p">)),</span>
+             <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">theta</span><span class="p">))]]</span></div>
+
+
+
+<div class="viewcode-block" id="get_y_rotation_matrix">
+<a class="viewcode-back" href="../../src.html#src.xyz_rotation.get_y_rotation_matrix">[docs]</a>
+<span class="k">def</span> <span class="nf">get_y_rotation_matrix</span><span class="p">(</span><span class="n">theta</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the matrix for rotation around the y axis by theta degrees.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    List</span>
+<span class="sd">        3 x 3 matrix for rotation around the y axis by theta degrees.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[[</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">theta</span><span class="p">)),</span>
+             <span class="mi">0</span><span class="p">,</span>
+             <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">theta</span><span class="p">))],</span>
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="p">[</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">theta</span><span class="p">)),</span>
+             <span class="mi">0</span><span class="p">,</span>
+             <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">theta</span><span class="p">))]]</span></div>
+
+
+
+<div class="viewcode-block" id="get_z_rotation_matrix">
+<a class="viewcode-back" href="../../src.html#src.xyz_rotation.get_z_rotation_matrix">[docs]</a>
+<span class="k">def</span> <span class="nf">get_z_rotation_matrix</span><span class="p">(</span><span class="n">theta</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the matrix for rotation around the z axis by theta degrees.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    List</span>
+<span class="sd">        3 x 3 matrix for rotation around the z axis by theta degrees.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[[</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">theta</span><span class="p">)),</span>
+             <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">theta</span><span class="p">)),</span>
+             <span class="mi">0</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">theta</span><span class="p">)),</span>
+             <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">theta</span><span class="p">)),</span>
+             <span class="mi">0</span><span class="p">],</span>
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span></div>
+
+
+
+<div class="viewcode-block" id="rotate">
+<a class="viewcode-back" href="../../src.html#src.xyz_rotation.rotate">[docs]</a>
+<span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="n">point</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">rotation_matrices</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Performs a rotation on a point via matrix multiplication, returns the new</span>
+<span class="sd">    coordinates of the rotated point.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    point : List</span>
+<span class="sd">        List of three floats corresponding to the point that will be rotated.</span>
+<span class="sd">    rotation_matrices : List</span>
+<span class="sd">        List of 3 x 3 matrices representing the transformation matrices for</span>
+<span class="sd">        a rotation.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    List</span>
+<span class="sd">        List of three floats corresponding to the point after rotation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">point</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">rotation_matrix</span> <span class="ow">in</span> <span class="n">rotation_matrices</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
+                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">3</span>
+                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="mi">3</span>
+                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">point</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">rotation_matrix</span> <span class="ow">in</span> <span class="n">rotation_matrices</span><span class="p">:</span>
+        <span class="n">old_point</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">coord</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="n">coord</span> <span class="o">+=</span> <span class="n">rotation_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">old_point</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../src.html#src.xyz_rotation.main">[docs]</a>
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">input_filename</span><span class="p">(</span><span class="s1">&#39;rotate&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_object</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">file_object</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">input_rotation_degrees</span><span class="p">()</span>
+    <span class="c1"># TODO: consider abstracting each type of transformation as a class that associates the matrices with the angle, for example?</span>
+    <span class="n">rotated_contents</span> <span class="o">=</span> <span class="n">transform_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">rotate</span><span class="p">,</span>
+                                       <span class="n">get_rotation_matrices</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
+
+    <span class="n">result_filename</span> <span class="o">=</span> <span class="n">filename</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; rotated.xyz&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">result_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">result_file</span><span class="p">:</span>
+        <span class="n">result_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">rotated_contents</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Process complete, result saved as </span><span class="si">{</span><span class="n">result_filename</span><span class="si">}</span><span class="s1">.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;If you would like to rotate additional files, input &quot;y&quot;: &#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">ctn</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">ctn</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span> <span class="ow">or</span> <span class="n">ctn</span> <span class="o">==</span> <span class="s1">&#39;Y&#39;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">main</span><span class="p">()</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">xyz-manipulation</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Peter Waddell.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

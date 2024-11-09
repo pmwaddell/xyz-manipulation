@@ -18,9 +18,11 @@ __maintainer__ = "Peter Waddell"
 __email__ = "pmwaddell9@gmail.com"
 __status__ = "Prototype"
 
-from inputs import input_filename, input_point
-from xyz_operate import transform_lines
 from typing import List
+
+from xyz_manipulation.src.inputs import input_filename, input_point
+from xyz_manipulation.src.xyz_operate import transform_lines
+
 
 
 def restart():

@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>src package &#8212; xyz-manipulation 0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="src" href="modules.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="src-package">
+<h1>src package<a class="headerlink" href="#src-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-src.inputs">
+<span id="src-inputs-module"></span><h2>src.inputs module<a class="headerlink" href="#module-src.inputs" title="Link to this heading">¶</a></h2>
+<p>This file contains utilities related to taking information from the user.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.inputs.input_coordinates">
+<span class="sig-prename descclassname"><span class="pre">src.inputs.</span></span><span class="sig-name descname"><span class="pre">input_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restart</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/src/inputs.html#input_coordinates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.inputs.input_coordinates" title="Link to this definition">¶</a></dt>
+<dd><p>Takes input from the user for coordinates in 3-space.</p>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>identity<span class="classifier">str</span></dt><dd><p>Name of the thing (e.g. point, vector) which the input is for.</p>
+</dd>
+<dt>restart<span class="classifier">Callable</span></dt><dd><p>Reference to the restart function to be called if the user decides.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h3>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>List</dt><dd><p>List of floats corresponding to the point input by the user.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.inputs.input_filename">
+<span class="sig-prename descclassname"><span class="pre">src.inputs.</span></span><span class="sig-name descname"><span class="pre">input_filename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/src/inputs.html#input_filename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.inputs.input_filename" title="Link to this definition">¶</a></dt>
+<dd><p>Asks the user to input the name of a .xyz file in the cwd. The user is
+prompted until they provide a valid input or request to quit.</p>
+<section id="id1">
+<h3>Returns<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>str</dt><dd><p>String of the filename of a .xyz file.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.inputs.input_normal_vector">
+<span class="sig-prename descclassname"><span class="pre">src.inputs.</span></span><span class="sig-name descname"><span class="pre">input_normal_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">restart</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/src/inputs.html#input_normal_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.inputs.input_normal_vector" title="Link to this definition">¶</a></dt>
+<dd><p>Takes input from the user for a normal vector.</p>
+<section id="id2">
+<h3>Parameters<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>restart<span class="classifier">Callable</span></dt><dd><p>Reference to the restart function to be called if the user decides.</p>
+</dd>
+</dl>
+</section>
+<section id="id3">
+<h3>Returns<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>List</dt><dd><p>List of floats corresponding to the normal vector input by the user.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.inputs.input_point">
+<span class="sig-prename descclassname"><span class="pre">src.inputs.</span></span><span class="sig-name descname"><span class="pre">input_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">restart</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/src/inputs.html#input_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.inputs.input_point" title="Link to this definition">¶</a></dt>
+<dd><p>Takes input from the user for a point.</p>
+<section id="id4">
+<h3>Parameters<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>restart<span class="classifier">Callable</span></dt><dd><p>Reference to the restart function to be called if the user decides.</p>
+</dd>
+</dl>
+</section>
+<section id="id5">
+<h3>Returns<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>List</dt><dd><p>List of floats corresponding to the point input by the user.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+<section id="module-src.plane">
+<span id="src-plane-module"></span><h2>src.plane module<a class="headerlink" href="#module-src.plane" title="Link to this heading">¶</a></h2>
+<p>A class representing a plane in 3-space.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.plane.Plane">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.plane.</span></span><span class="sig-name descname"><span class="pre">Plane</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normal_vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/plane.html#Plane"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.plane.Plane" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class representing a plane in 3D, defined by a point and normal vector.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.plane.Plane.get_normal_vector">
+<span class="sig-name descname"><span class="pre">get_normal_vector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/src/plane.html#Plane.get_normal_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.plane.Plane.get_normal_vector" title="Link to this definition">¶</a></dt>
+<dd><p>Getter that returns the normal vector which defines the plane in part.</p>
+<section id="id6">
+<h3>Returns<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>List</dt><dd><p>List of three floats corresponding to the normal vector’s coords.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.plane.Plane.get_point">
+<span class="sig-name descname"><span class="pre">get_point</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/src/plane.html#Plane.get_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.plane.Plane.get_point" title="Link to this definition">¶</a></dt>
+<dd><p>Getter that returns the point which defines the plane in part.</p>
+<section id="id7">
+<h3>Returns<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>List</dt><dd><p>List of three floats corresponding to the point.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-src.xyz_operate">
+<span id="src-xyz-operate-module"></span><h2>src.xyz_operate module<a class="headerlink" href="#module-src.xyz_operate" title="Link to this heading">¶</a></h2>
+<p>Contains general operations used throughout the package.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_operate.calc_angle_between_vectors">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_operate.</span></span><span class="sig-name descname"><span class="pre">calc_angle_between_vectors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/src/xyz_operate.html#calc_angle_between_vectors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_operate.calc_angle_between_vectors" title="Link to this definition">¶</a></dt>
+<dd><p>Computes the angle between two vectors.</p>
+<section id="id8">
+<h3>Parameters<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>v<span class="classifier">List</span></dt><dd><p>List of  floats: coordinates of the vector.</p>
+</dd>
+<dt>u<span class="classifier">List</span></dt><dd><p>List of  floats: coordinates of the vector.</p>
+</dd>
+</dl>
+</section>
+<section id="id9">
+<h3>Returns<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>float</dt><dd><p>Angle between the two vectors, in degrees.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_operate.calc_magnitude">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_operate.</span></span><span class="sig-name descname"><span class="pre">calc_magnitude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/src/xyz_operate.html#calc_magnitude"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_operate.calc_magnitude" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the magnitude of the input vector.</p>
+<section id="id10">
+<h3>Parameters<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>v<span class="classifier">List</span></dt><dd><p>List of  floats: coordinates of the vector.</p>
+</dd>
+</dl>
+</section>
+<section id="id11">
+<h3>Returns<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>float</dt><dd><p>Magnitude of the vector.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_operate.cross">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_operate.</span></span><span class="sig-name descname"><span class="pre">cross</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/src/xyz_operate.html#cross"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_operate.cross" title="Link to this definition">¶</a></dt>
+<dd><p>Computes the cross product of two vectors.</p>
+<section id="id12">
+<h3>Parameters<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>v<span class="classifier">List</span></dt><dd><p>List of  floats: coordinates of the vector.</p>
+</dd>
+<dt>u<span class="classifier">List</span></dt><dd><p>List of  floats: coordinates of the vector.</p>
+</dd>
+</dl>
+</section>
+<section id="id13">
+<h3>Returns<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>List</dt><dd><p>Cross product of the two vectors.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_operate.dot">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_operate.</span></span><span class="sig-name descname"><span class="pre">dot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/src/xyz_operate.html#dot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_operate.dot" title="Link to this definition">¶</a></dt>
+<dd><p>Computes the dot product of two vectors.</p>
+<section id="id14">
+<h3>Parameters<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>v<span class="classifier">List</span></dt><dd><p>List of  floats: coordinates of the vector.</p>
+</dd>
+<dt>u<span class="classifier">List</span></dt><dd><p>List of  floats: coordinates of the vector.</p>
+</dd>
+</dl>
+</section>
+<section id="id15">
+<h3>Returns<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>float</dt><dd><p>Dot product of the two vectors.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_operate.format_coord">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_operate.</span></span><span class="sig-name descname"><span class="pre">format_coord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coord</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/src/xyz_operate.html#format_coord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_operate.format_coord" title="Link to this definition">¶</a></dt>
+<dd><p>Formats a coordinate for a .xyz file by representing the number to six
+decimal places and adding additional spaces in front as needed.</p>
+<p>The total length of each coordinate string should be 12.</p>
+<section id="id16">
+<h3>Parameters<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>coord<span class="classifier">float</span></dt><dd><p>Float of the coordinate to be formatted.</p>
+</dd>
+</dl>
+</section>
+<section id="id17">
+<h3>Returns<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>str</dt><dd><p>Formatted coord., ready to add to a line in the translated .xyz file.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_operate.format_elem">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_operate.</span></span><span class="sig-name descname"><span class="pre">format_elem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elem</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/src/xyz_operate.html#format_elem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_operate.format_elem" title="Link to this definition">¶</a></dt>
+<dd><p>Formats an element symbol for a .xyz file by adding an additional spaces
+after the symbol as needed in order to preserve the file’s formatting.</p>
+<section id="id18">
+<h3>Parameters<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>elem<span class="classifier">str</span></dt><dd><p>String of the element symbol.</p>
+</dd>
+</dl>
+</section>
+<section id="id19">
+<h3>Returns<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>str</dt><dd><p>Formatted element symbol.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_operate.normalize">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_operate.</span></span><span class="sig-name descname"><span class="pre">normalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/src/xyz_operate.html#normalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_operate.normalize" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a normalized version of the input vector (i.e. same direction but
+magnitude of 1).</p>
+<section id="id20">
+<h3>Parameters<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>v<span class="classifier">List</span></dt><dd><p>List of three floats: coordinates to the vector that will be normalized.</p>
+</dd>
+</dl>
+</section>
+<section id="id21">
+<h3>Returns<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>List</dt><dd><p>List of three floats corresponding to the point after normalization.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_operate.transform_lines">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_operate.</span></span><span class="sig-name descname"><span class="pre">transform_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformation_arg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Plane</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/src/xyz_operate.html#transform_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_operate.transform_lines" title="Link to this definition">¶</a></dt>
+<dd><p>Performs a given transformation on a series of points from lines of a .xyz
+file, formats the result in .xyz file format and returns the new lines.</p>
+<section id="id22">
+<h3>Parameters<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>lines<span class="classifier">List</span></dt><dd><p>List of lines from a .xyz file to be transformed.</p>
+</dd>
+<dt>transform<span class="classifier">Callable</span></dt><dd><p>Function corresponding to the desired transformation.</p>
+</dd>
+<dt>transformation_arg<span class="classifier">Union[List, Plane]</span></dt><dd><p>Additional argument for the transformation, e.g. angle of rotation.</p>
+</dd>
+</dl>
+</section>
+<section id="id23">
+<h3>Returns<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>List</dt><dd><p>List of transformed lines in .xyz file format.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+<section id="module-src.xyz_reflection">
+<span id="src-xyz-reflection-module"></span><h2>src.xyz_reflection module<a class="headerlink" href="#module-src.xyz_reflection" title="Link to this heading">¶</a></h2>
+<p>A script which reflects sets of coordinates in .xyz files.</p>
+<p>The user is prompted for the filename of the .xyz file they wish to reflect,
+and the plane (in terms of a point and normal vector) they want to reflect
+through.  Then, a new .xyz file is prepared which contains the same structure
+as the original file but with all coordinates reflected in this manner.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_reflection.input_reflection_plane">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_reflection.</span></span><span class="sig-name descname"><span class="pre">input_reflection_plane</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Plane</span></span></span><a class="reference internal" href="_modules/src/xyz_reflection.html#input_reflection_plane"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_reflection.input_reflection_plane" title="Link to this definition">¶</a></dt>
+<dd><p>Takes input from the user for a point and normal vector and returns a
+corresponding instance of the Plane class.</p>
+<section id="id24">
+<h3>Returns<a class="headerlink" href="#id24" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Plane</dt><dd><p>Instance of Plane class with desired point and normal vector.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_reflection.main">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_reflection.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/xyz_reflection.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_reflection.main" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_reflection.reflect">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_reflection.</span></span><span class="sig-name descname"><span class="pre">reflect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plane</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Plane</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/src/xyz_reflection.html#reflect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_reflection.reflect" title="Link to this definition">¶</a></dt>
+<dd><p>Reflects a point through a given plane.</p>
+<section id="id25">
+<h3>Parameters<a class="headerlink" href="#id25" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>point<span class="classifier">List</span></dt><dd><p>List of three floats corresponding to the point that will be reflected.</p>
+</dd>
+<dt>plane<span class="classifier">Plane</span></dt><dd><p>Plane through which the point will be reflected.</p>
+</dd>
+</dl>
+</section>
+<section id="id26">
+<h3>Returns<a class="headerlink" href="#id26" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>List</dt><dd><p>List of three floats corresponding to the point after reflection.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_reflection.restart">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_reflection.</span></span><span class="sig-name descname"><span class="pre">restart</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/xyz_reflection.html#restart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_reflection.restart" title="Link to this definition">¶</a></dt>
+<dd><p>Restarts the program after adding some space in the shell.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_reflection.xy_reflect">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_reflection.</span></span><span class="sig-name descname"><span class="pre">xy_reflect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/src/xyz_reflection.html#xy_reflect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_reflection.xy_reflect" title="Link to this definition">¶</a></dt>
+<dd><p>Reflects a point through the xy plane.</p>
+<section id="id27">
+<h3>Parameters<a class="headerlink" href="#id27" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>point<span class="classifier">List</span></dt><dd><p>List of three floats corresponding to the point that will be reflected.</p>
+</dd>
+</dl>
+</section>
+<section id="id28">
+<h3>Returns<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>List</dt><dd><p>List of three floats corresponding to the point after reflection.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+<section id="module-src.xyz_rotation">
+<span id="src-xyz-rotation-module"></span><h2>src.xyz_rotation module<a class="headerlink" href="#module-src.xyz_rotation" title="Link to this heading">¶</a></h2>
+<p>A script which rotates sets of coordinates in .xyz files.</p>
+<p>The user is prompted for the filename of the .xyz file they wish to translate,
+the axis about which they would like to rotate the structure, and the number of
+degrees they would like to rotate it by. Then, a new .xyz file is prepared
+which contains the same structure as the original file but with all coordinates
+rotated in this manner.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_rotation.get_compound_rotation_matrices">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_rotation.</span></span><span class="sig-name descname"><span class="pre">get_compound_rotation_matrices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rotation_axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/src/xyz_rotation.html#get_compound_rotation_matrices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_rotation.get_compound_rotation_matrices" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a list of rotation matrices (around x, y and z) which represent a
+rotation around an arbitrary axis by the input degrees.</p>
+<section id="id29">
+<h3>Parameters<a class="headerlink" href="#id29" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>rotation_axis<span class="classifier">List</span></dt><dd><p>List of  floats: coordinates of the rotation axis (which is taken to be
+between the origin and this input point).</p>
+</dd>
+<dt>theta<span class="classifier">float</span></dt><dd><p>Number of degrees for the rotation.</p>
+</dd>
+</dl>
+</section>
+<section id="id30">
+<h3>Returns<a class="headerlink" href="#id30" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>List</dt><dd><p>List of rotation matrices which accomplish the desired rotation.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_rotation.get_rotation_matrices">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_rotation.</span></span><span class="sig-name descname"><span class="pre">get_rotation_matrices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/src/xyz_rotation.html#get_rotation_matrices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_rotation.get_rotation_matrices" title="Link to this definition">¶</a></dt>
+<dd><p>Asks the user to input a point that, along with the origin, defines the
+desired axis of rotation. The name of one of the principle axes can also be
+input (x, y or z). The user is prompted until they provide a valid input or
+request to restart.</p>
+<section id="id31">
+<h3>Returns<a class="headerlink" href="#id31" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>List</dt><dd><p>List of rotation matrices for the desired rotation.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_rotation.get_x_rotation_matrix">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_rotation.</span></span><span class="sig-name descname"><span class="pre">get_x_rotation_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/src/xyz_rotation.html#get_x_rotation_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_rotation.get_x_rotation_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the matrix for rotation around the x axis by theta degrees.</p>
+<section id="id32">
+<h3>Returns<a class="headerlink" href="#id32" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>List</dt><dd><p>3 x 3 matrix for rotation around the x axis by theta degrees.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_rotation.get_y_rotation_matrix">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_rotation.</span></span><span class="sig-name descname"><span class="pre">get_y_rotation_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/src/xyz_rotation.html#get_y_rotation_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_rotation.get_y_rotation_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the matrix for rotation around the y axis by theta degrees.</p>
+<section id="id33">
+<h3>Returns<a class="headerlink" href="#id33" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>List</dt><dd><p>3 x 3 matrix for rotation around the y axis by theta degrees.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_rotation.get_z_rotation_matrix">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_rotation.</span></span><span class="sig-name descname"><span class="pre">get_z_rotation_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/src/xyz_rotation.html#get_z_rotation_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_rotation.get_z_rotation_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the matrix for rotation around the z axis by theta degrees.</p>
+<section id="id34">
+<h3>Returns<a class="headerlink" href="#id34" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>List</dt><dd><p>3 x 3 matrix for rotation around the z axis by theta degrees.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_rotation.input_rotation_degrees">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_rotation.</span></span><span class="sig-name descname"><span class="pre">input_rotation_degrees</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/src/xyz_rotation.html#input_rotation_degrees"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_rotation.input_rotation_degrees" title="Link to this definition">¶</a></dt>
+<dd><p>Asks the user to input the desired number of degrees for the rotation. The
+user is prompted until they provide a valid input or request to restart.</p>
+<section id="id35">
+<h3>Returns<a class="headerlink" href="#id35" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>float</dt><dd><p>Float corresponding to degrees of the desired rotation.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_rotation.main">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_rotation.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/xyz_rotation.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_rotation.main" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_rotation.restart">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_rotation.</span></span><span class="sig-name descname"><span class="pre">restart</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/xyz_rotation.html#restart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_rotation.restart" title="Link to this definition">¶</a></dt>
+<dd><p>Restarts the program after adding some space in the shell.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_rotation.rotate">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_rotation.</span></span><span class="sig-name descname"><span class="pre">rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotation_matrices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/src/xyz_rotation.html#rotate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_rotation.rotate" title="Link to this definition">¶</a></dt>
+<dd><p>Performs a rotation on a point via matrix multiplication, returns the new
+coordinates of the rotated point.</p>
+<section id="id36">
+<h3>Parameters<a class="headerlink" href="#id36" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>point<span class="classifier">List</span></dt><dd><p>List of three floats corresponding to the point that will be rotated.</p>
+</dd>
+<dt>rotation_matrices<span class="classifier">List</span></dt><dd><p>List of 3 x 3 matrices representing the transformation matrices for
+a rotation.</p>
+</dd>
+</dl>
+</section>
+<section id="id37">
+<h3>Returns<a class="headerlink" href="#id37" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>List</dt><dd><p>List of three floats corresponding to the point after rotation.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+<section id="module-src.xyz_translation">
+<span id="src-xyz-translation-module"></span><h2>src.xyz_translation module<a class="headerlink" href="#module-src.xyz_translation" title="Link to this heading">¶</a></h2>
+<p>A script which translates sets of coordinates in .xyz files.</p>
+<p>The user is prompted for the filename of the .xyz file they wish to translate,
+the line in that file of the atom they would like to move, and the coordinates
+of the new point to which they would like to move that atom. Then, a new .xyz
+file is prepared which contains the same structure as the original file but
+with all coordinates translated relative to the specified atom, effectively
+translating the entire structure.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_translation.input_focus_line">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_translation.</span></span><span class="sig-name descname"><span class="pre">input_focus_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">last_line_num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/src/xyz_translation.html#input_focus_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_translation.input_focus_line" title="Link to this definition">¶</a></dt>
+<dd><p>Asks the user to input the number of the ‘focus line’ of the .xyz file. The
+user is prompted until they provide a valid input or request to restart.</p>
+<p>The ‘focus line’ is the line containing the atom which the user wants to
+move to their specified point; all other atoms are moved relative to it.</p>
+<section id="id38">
+<h3>Parameters<a class="headerlink" href="#id38" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>last_line_num<span class="classifier">int</span></dt><dd><p>Number of the last line in the .xyz file, used to validate that the
+input from the user is not beyond the number of lines in the file.</p>
+</dd>
+</dl>
+</section>
+<section id="id39">
+<h3>Returns<a class="headerlink" href="#id39" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>int</dt><dd><p>Number of the ‘focus line’ specified by the user.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_translation.main">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_translation.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/xyz_translation.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_translation.main" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_translation.restart">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_translation.</span></span><span class="sig-name descname"><span class="pre">restart</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/xyz_translation.html#restart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_translation.restart" title="Link to this definition">¶</a></dt>
+<dd><p>Restarts the program after adding some space in the shell.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.xyz_translation.translate">
+<span class="sig-prename descclassname"><span class="pre">src.xyz_translation.</span></span><span class="sig-name descname"><span class="pre">translate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/src/xyz_translation.html#translate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.xyz_translation.translate" title="Link to this definition">¶</a></dt>
+<dd><p>Translates a point according to an input vector w/ the change in each coord.</p>
+<section id="id40">
+<h3>Parameters<a class="headerlink" href="#id40" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>point<span class="classifier">List</span></dt><dd><p>Coordinates of the point to be translated.</p>
+</dd>
+<dt>d_vector<span class="classifier">List</span></dt><dd><p>Vector containing the desired change in each coordinate for translation.</p>
+</dd>
+</dl>
+</section>
+<section id="id41">
+<h3>Returns<a class="headerlink" href="#id41" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>List</dt><dd><p>Coordinates of the translated point.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+<section id="module-src">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-src" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">xyz-manipulation</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">src package</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">src</a><ul>
+      <li>Previous: <a href="modules.html" title="previous chapter">src</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Peter Waddell.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/src.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

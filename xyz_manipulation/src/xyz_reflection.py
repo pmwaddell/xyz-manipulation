@@ -17,11 +17,12 @@ __email__ = "pmwaddell9@gmail.com"
 __status__ = "Prototype"
 
 from typing import List
-from inputs import input_filename, input_point, input_normal_vector
-from xyz_operate import cross, calc_magnitude, calc_angle_between_vectors, \
+
+from xyz_manipulation.src.inputs import input_filename, input_point, input_normal_vector
+from xyz_manipulation.src.xyz_operate import cross, calc_magnitude, calc_angle_between_vectors, \
     transform_lines
-from xyz_rotation import rotate, get_compound_rotation_matrices
-from plane import Plane
+from xyz_manipulation.src.xyz_rotation import rotate, get_compound_rotation_matrices
+from xyz_manipulation.src.plane import Plane
 
 
 def restart():
