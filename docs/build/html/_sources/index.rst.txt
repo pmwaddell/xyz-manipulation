@@ -14,7 +14,5 @@ documentation for details.
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-
-.. autofunction:: xyz_manipulation/src/xyz_operate.normalize
-
-.. autofunction:: xyz_operate.normalize
+   modules
+   src
