@@ -12,9 +12,6 @@ import sys
 sys.path.insert(0, os.path.abspath('../..'))
 sys.path.insert(0, os.path.abspath('..'))
 
-# import xyz_manipulation.src.plane
-# import xyz_manipulation.src.inputs
-
 project = 'xyz-manipulation'
 copyright = '2024, Peter Waddell'
 author = 'Peter Waddell'
